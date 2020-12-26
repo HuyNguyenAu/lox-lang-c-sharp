@@ -19,6 +19,18 @@ namespace LoxLangInCSharp
             this.tokens = tokens;
         }
 
+        public Expression Parse()
+        {
+            try
+            {
+                return Expression();
+            }
+            catch (ParseError error)
+            {
+                return null;
+            }
+        }
+
         private Expression Expression()
         {
             return Equality();
@@ -117,8 +129,7 @@ namespace LoxLangInCSharp
                 return new Expression.Grouping(expression);
             }
 
-            // Error?
-            return null;
+            throw Error(Peek(), "Expected expression.");
         }
 
         private bool Match(params TokenType[] types)
@@ -185,7 +196,7 @@ namespace LoxLangInCSharp
                 Report(token.line, " at '" + token.lexeme + "'", message);
             }
         }
-        
+
         private static void Report(int line, string where, string message)
         {
             Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);

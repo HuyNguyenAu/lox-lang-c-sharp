@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using Tools;
+
 namespace LoxLangInCSharp
 {
     class Program
@@ -61,11 +63,13 @@ namespace LoxLangInCSharp
         {
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.ScanTokens();
+            Parser parser = new Parser(tokens);
+            Expression expression = parser.Parse();
 
-            foreach (Token token in tokens)
-            {
-                Console.WriteLine(token.ToString());
-            }
+            // Stop if we run into an error.
+            if (hadError) return;
+
+            Console.WriteLine(new AstPrinter().Print(expression));
         }
 
         public static void Error(int line, string message)

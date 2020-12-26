@@ -6,7 +6,7 @@ namespace Tools
 {
     public class AstPrinter : Expression.IVisitor<string>
     {
-        private string Print(Expression expr)
+        public string Print(Expression expr)
         {
             return expr.Accept(this);
         }
