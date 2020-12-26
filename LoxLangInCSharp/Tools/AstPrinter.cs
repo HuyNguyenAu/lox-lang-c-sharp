@@ -1,0 +1,66 @@
+﻿using LoxLangInCSharp;
+using System;
+using System.Text;
+
+namespace Tools
+{
+    public class AstPrinter : Expression.IVisitor<string>
+    {
+        private string Print(Expression expr)
+        {
+            return expr.Accept(this);
+        }
+
+        public string VisitBinaryExpression(Expression.Binary expression)
+        {
+            return Parenthesize(expression.op.lexeme, expression.left, expression.right);
+        }
+
+        public string VisitGroupingExpression(Expression.Grouping expression)
+        {
+            return Parenthesize("group", expression.expression);
+        }
+
+        public string VisitLiteralExpression(Expression.Literal expression)
+        {
+            if (expression.value == null) return "nil";
+            return expression.value.ToString();
+        }
+
+        public string VisitUnaryExpression(Expression.Unary expression)
+        {
+            return Parenthesize(expression.op.lexeme, expression.right);
+        }
+
+        private string Parenthesize(string name, params Expression[] expressions)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("(").Append(name);
+
+            foreach (Expression expression in expressions)
+            {
+                builder.Append(" ");
+                builder.Append(expression.Accept(this));
+            }
+
+            builder.Append(")");
+
+            return builder.ToString();
+        }
+
+        // Hack to test printer.
+        static void Main(string[] args)
+        {
+            Expression expression = new Expression.Binary(
+                    new Expression.Unary(
+                            new Token(TokenType.MINUS, "-", null, 1),
+                            new Expression.Literal(123)),
+                    new Token(TokenType.STAR, "*", null, 1),
+                    new Expression.Grouping(new Expression.Literal(45.67))
+            );
+
+            Console.WriteLine(new AstPrinter().Print(expression));
+        }
+    }
+}
