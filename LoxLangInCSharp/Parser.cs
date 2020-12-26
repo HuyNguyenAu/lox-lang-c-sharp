@@ -190,5 +190,31 @@ namespace LoxLangInCSharp
         {
             Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
         }
+
+        private void Synchronise()
+        {
+            Advance();
+
+            while (!IsAtEnd())
+            {
+                if (Previous().type == TokenType.SEMICOLON) return;
+
+                switch (Peek().type)
+                {
+                    case TokenType.CLASS:
+                    case TokenType.FUN:
+                    case TokenType.VAR:
+                    case TokenType.FOR:
+                    case TokenType.IF:
+                    case TokenType.WHILE:
+                    case TokenType.PRINT:
+                    case TokenType.RETURN:
+                        return;
+                }
+
+                Advance();
+            }
+        }
+
     }
 }
