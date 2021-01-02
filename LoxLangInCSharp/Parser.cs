@@ -97,14 +97,12 @@ namespace LoxLangInCSharp
 
         private Expression Unary()
         {
-            Expression left = Unary();
-
-
             while (Match(TokenType.BANG, TokenType.MINUS))
             {
                 Token op = Previous();
                 Expression right = Unary();
-                left = new Expression.Binary(left, op, right);
+
+                return new Expression.Unary(op, right);
             }
 
             return Primary();
