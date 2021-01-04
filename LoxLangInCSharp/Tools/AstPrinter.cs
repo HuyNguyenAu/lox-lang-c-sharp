@@ -36,15 +36,15 @@ namespace Tools
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.Append("(").Append(name);
+            builder.Append('(').Append(name);
 
             foreach (Expression expression in expressions)
             {
-                builder.Append(" ");
+                builder.Append(' ');
                 builder.Append(expression.Accept(this));
             }
 
-            builder.Append(")");
+            builder.Append(')');
 
             return builder.ToString();
         }

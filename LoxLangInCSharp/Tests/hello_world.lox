@@ -1,9 +1,1 @@
-// this is a comment
-(( )){} / // grouping stuff
-!*+-/=<> <= == // operators
-"asd"
-and
-asd
--=
-/* asd 
-asd*/ -
+// Print hello world
