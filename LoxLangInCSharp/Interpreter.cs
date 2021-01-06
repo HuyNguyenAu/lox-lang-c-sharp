@@ -35,6 +35,10 @@ namespace LoxLangInCSharp
 
                 case TokenType.SLASH:
                     CheckNumberOperands(expression.op, left, right);
+
+                    // Handle a zero divisor operation.
+                    if ((double)right <= 0d) throw new RuntimeError(expression.op, "Unable to divide by zero.");
+
                     return (double)left / (double)right;
 
                 case TokenType.STAR:
@@ -159,7 +163,7 @@ namespace LoxLangInCSharp
             }
             catch (RuntimeError error)
             {
-                LoxLangInCSharp.Program.RuntimeError(error);
+                Program.RuntimeError(error);
             }
         }
     }

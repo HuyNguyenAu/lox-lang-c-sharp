@@ -71,6 +71,8 @@ namespace LoxLangInCSharp
 
             // Stop if we run into an error.
             if (hadError) return;
+            // TEMP: Exit early when expression is invalid.
+            if (expression == null) return;
 
             interpreter.Interpret(expression);
         }
