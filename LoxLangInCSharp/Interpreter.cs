@@ -150,7 +150,7 @@ namespace LoxLangInCSharp
             return obj.ToString();
         }
 
-        private void Interpret(Expression expression)
+        public void Interpret(Expression expression)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace LoxLangInCSharp
             }
             catch (RuntimeError error)
             {
-                LoxLangInCSharp.runtimeError(error);
+                LoxLangInCSharp.Program.RuntimeError(error);
             }
         }
     }

@@ -8,7 +8,9 @@ namespace LoxLangInCSharp
 {
     class Program
     {
+        static readonly Interpreter interpreter = new Interpreter();
         static bool hadError = false;
+        static bool hadRuntimeError = false;
 
         public static void Main(string[] args)
         {
@@ -33,6 +35,7 @@ namespace LoxLangInCSharp
             {
                 Run(File.ReadAllText(path));
                 if (hadError) Environment.Exit(65);
+                if (hadRuntimeError) Environment.Exit(70);
             }
             catch (IOException e)
             {
@@ -69,7 +72,7 @@ namespace LoxLangInCSharp
             // Stop if we run into an error.
             if (hadError) return;
 
-            Console.WriteLine(new AstPrinter().Print(expression));
+            interpreter.Interpret(expression);
         }
 
         public static void Error(int line, string message)
@@ -80,6 +83,13 @@ namespace LoxLangInCSharp
         private static void Report(int line, string where, string message)
         {
             Console.WriteLine($"[line {line}] Error {where}: {message}");
+        }
+
+        public static void RuntimeError(RuntimeError error)
+        {
+            Console.Error.WriteLine($"{error.GetMessage()}{Environment.NewLine}" +
+                $"[line {error.GetToken().line}]");
+            hadRuntimeError = true;
         }
     }
 }

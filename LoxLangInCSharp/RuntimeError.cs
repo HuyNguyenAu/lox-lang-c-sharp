@@ -14,5 +14,15 @@ namespace LoxLangInCSharp
             this.token = token;
             this.message = message;
         }
+
+        public Token GetToken()
+        {
+            return token;
+        }
+        
+        public string GetMessage()
+        {
+            return message;
+        }
     }
 }
