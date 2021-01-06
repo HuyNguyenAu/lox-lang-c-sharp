@@ -14,24 +14,31 @@ namespace LoxLangInCSharp
             switch (expression.op.type)
             {
                 case TokenType.GREATER:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left > (double)right;
 
                 case TokenType.GREATER_EQUAL:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left >= (double)right;
 
                 case TokenType.LESS:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left < (double)right;
 
                 case TokenType.LESS_EQUAL:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left <= (double)right;
 
                 case TokenType.MINUS:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left - (double)right;
 
                 case TokenType.SLASH:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left / (double)right;
 
                 case TokenType.STAR:
+                    CheckNumberOperands(expression.op, left, right);
                     return (double)left * (double)right;
 
                 case TokenType.PLUS:
@@ -47,11 +54,12 @@ namespace LoxLangInCSharp
                         return (string)left + (string)right;
                     }
 
-                    break;
+                    throw new RuntimeError(expression.op, 
+                        "Operands must be two numbers or two strings.");
 
                 case TokenType.BANG_EQUAL:
                     return !IsEqual(left, right);
-                
+
                 case TokenType.EQUAL_EQUAL:
                     return IsEqual(left, right);
             }
@@ -77,6 +85,7 @@ namespace LoxLangInCSharp
             switch (expression.op.type)
             {
                 case TokenType.MINUS:
+                    CheckNumberOperand(expression.op, right);
                     return -(double)right;
                 case TokenType.BANG:
                     return !IsTruthy(right);
@@ -84,6 +93,21 @@ namespace LoxLangInCSharp
 
             // Unreachable.
             return null;
+        }
+
+        private void CheckNumberOperand(Token op, object operand)
+        {
+            if (operand.GetType() == typeof(double)) return;
+
+            throw new RuntimeError(op, "Operand must be a number.");
+        }
+
+        private void CheckNumberOperands(Token op, object left, object right)
+        {
+            if (left.GetType() == typeof(double) &&
+                right.GetType() == typeof(double)) return;
+
+            throw new RuntimeError(op, "Operand must be a numbers.");
         }
 
         private object Evaluate(Expression expression)
@@ -105,6 +129,38 @@ namespace LoxLangInCSharp
             if (a == null) return false;
 
             return a.Equals(b);
+        }
+
+        private string Stringify(object obj)
+        {
+            if (obj == null) return "nil";
+
+            if (obj.GetType() == typeof(double))
+            {
+                string text = obj.ToString();
+                
+                if (text.EndsWith(".0"))
+                {
+                    text = text.Substring(0, text.Length - 2);
+                }
+
+                return text;
+            }
+
+            return obj.ToString();
+        }
+
+        private void Interpret(Expression expression)
+        {
+            try
+            {
+                object value = Evaluate(expression);
+                Console.WriteLine(Stringify(value));
+            }
+            catch (RuntimeError error)
+            {
+                LoxLangInCSharp.runtimeError(error);
+            }
         }
     }
 }
