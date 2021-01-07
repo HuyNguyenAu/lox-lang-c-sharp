@@ -67,14 +67,21 @@ namespace LoxLangInCSharp
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.ScanTokens();
             Parser parser = new Parser(tokens);
-            Expression expression = parser.Parse();
+            List<Statement> statements = new List<Statement>();
+
+            // TEMP: Handle parse errors.
+            try
+            {
+                statements = parser.Parse();
+            }
+            catch (Exception) { }
 
             // Stop if we run into an error.
             if (hadError) return;
             // TEMP: Exit early when expression is invalid.
-            if (expression == null) return;
+            if (statements.Count <= 0) return;
 
-            interpreter.Interpret(expression);
+            interpreter.Interpret(statements);
         }
 
         public static void Error(int line, string message)
