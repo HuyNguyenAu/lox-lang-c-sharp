@@ -22,9 +22,15 @@ namespace Tools
                     "Binary   : Expression left, Token op, Expression right",
                     "Grouping : Expression expression",
                     "Literal  : object value",
-                    "Unary    : Token op, Expression right"
+                    "Unary    : Token op, Expression right",
                 }
             );
+
+            DefineAst(outputDir, "Statement", new List<string>()
+            {
+                "Expression : LoxLangInCSharp.Expression expression",
+                "Print      : LoxLangInCSharp.Expression expression"
+            });
         }
 
         private static void DefineAst(string outputDir, string baseName, List<string> types)
@@ -34,7 +40,7 @@ namespace Tools
             writer.WriteLine("using System;");
             writer.WriteLine("using System.Collections.Generic;");
             writer.WriteLine();
-            writer.WriteLine("namespace loxlang {");
+            writer.WriteLine("namespace LoxLangInCSharp {");
             writer.WriteLine($"public abstract class {baseName} {{");
 
             DefineVisitor(writer, baseName, types);
