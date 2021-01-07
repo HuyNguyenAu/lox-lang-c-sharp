@@ -20,21 +20,42 @@ namespace LoxLangInCSharp
         }
 
         /* TODO: Stackoverflow error. Should we move this to the heap. */
-        public Expression Parse()
+        public List<Statement> Parse()
         {
-            try
+            List<Statement> statements = new List<Statement>();
+
+            while (!IsAtEnd())
             {
-                return Expression();
+                statements.Add(Statement());
             }
-            catch (ParseError error)
-            {
-                return null;
-            }
+
+            return statements;
         }
 
         private Expression Expression()
         {
             return Equality();
+        }
+
+        private Statement Statement()
+        {
+            if (Match(TokenType.PRINT)) return PrintStatement();
+
+            return ExpressionStatement();
+        }
+
+        private Statement PrintStatement()
+        {
+            Expression value = Expression();
+            Consume(TokenType.SEMICOLON, "Expected ';' after value");
+            return new Statement.Print(value);
+        }
+        
+        private Statement ExpressionStatement()
+        {
+            Expression value = Expression();
+            Consume(TokenType.SEMICOLON, "Expected ';' after expression.");
+            return new Statement.Expression(value);
         }
 
         private Expression Equality()
