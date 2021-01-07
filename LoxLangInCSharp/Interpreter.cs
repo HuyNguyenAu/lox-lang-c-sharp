@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LoxLangInCSharp
 {
-    public class Interpreter : Expression.IVisitor<object>
+    public class Interpreter : Expression.IVisitor<object>, Statement.IVisitor<object>
     {
         public object VisitBinaryExpression(Expression.Binary expression)
         {
@@ -99,6 +99,19 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitExpressionStatement(Statement.Expression statement)
+        {
+            Evaluate(statement.expression);
+            return null;
+        }
+
+        public object VisitPrintStatement(Statement.Print statement)
+        {
+            object value = Evaluate(statement.expression);
+            Console.WriteLine(Stringify(value));
+            return null;
+        }
+
         private void CheckNumberOperand(Token op, object operand)
         {
             if (operand.GetType() == typeof(double)) return;
@@ -117,6 +130,11 @@ namespace LoxLangInCSharp
         private object Evaluate(Expression expression)
         {
             return expression.Accept(this);
+        }
+
+        private void Execute(Statement statement)
+        {
+            statement.Accept(this);
         }
 
         private bool IsTruthy(object obj)
@@ -154,12 +172,14 @@ namespace LoxLangInCSharp
             return obj.ToString();
         }
 
-        public void Interpret(Expression expression)
+        public void Interpret(List<Statement> statements)
         {
             try
             {
-                object value = Evaluate(expression);
-                Console.WriteLine(Stringify(value));
+                foreach (Statement statement in statements)
+                {
+                    Execute(statement);
+                }
             }
             catch (RuntimeError error)
             {
