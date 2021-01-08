@@ -11,6 +11,7 @@ namespace LoxLangInCSharp
             public T VisitGroupingExpression(Grouping expression);
             public T VisitLiteralExpression(Literal expression);
             public T VisitUnaryExpression(Unary expression);
+            public T VisitVariableExpression(Variable expression);
         }
         public class Binary : Expression
         {
@@ -73,6 +74,20 @@ namespace LoxLangInCSharp
 
             public readonly Token op;
             public readonly Expression right;
+        }
+        public class Variable : Expression
+        {
+            public Variable(Token name)
+            {
+                this.name = name;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitVariableExpression(this);
+            }
+
+            public readonly Token name;
         }
 
         public abstract T Accept<T>(IVisitor<T> visitor);

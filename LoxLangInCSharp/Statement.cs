@@ -9,6 +9,7 @@ namespace LoxLangInCSharp
         {
             public T VisitExpressionStatement(Expression statement);
             public T VisitPrintStatement(Print statement);
+            public T VisitVarStatement(Var statement);
         }
         public class Expression : Statement
         {
@@ -37,6 +38,22 @@ namespace LoxLangInCSharp
             }
 
             public readonly LoxLangInCSharp.Expression expression;
+        }
+        public class Var : Statement
+        {
+            public Var(Token name, LoxLangInCSharp.Expression initialiser)
+            {
+                this.name = name;
+                this.initialiser = initialiser;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitVarStatement(this);
+            }
+
+            public readonly Token name;
+            public readonly LoxLangInCSharp.Expression initialiser;
         }
 
         public abstract T Accept<T>(IVisitor<T> visitor);

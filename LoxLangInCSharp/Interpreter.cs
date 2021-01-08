@@ -186,5 +186,10 @@ namespace LoxLangInCSharp
                 Program.RuntimeError(error);
             }
         }
+
+        public object VisitVarStatement(Statement.Var statement)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

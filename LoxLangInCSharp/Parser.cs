@@ -26,7 +26,7 @@ namespace LoxLangInCSharp
 
             while (!IsAtEnd())
             {
-                statements.Add(Statement());
+                statements.Add(Declaration());
             }
 
             return statements;
@@ -35,6 +35,21 @@ namespace LoxLangInCSharp
         private Expression Expression()
         {
             return Equality();
+        }
+
+        private Statement Declaration()
+        {
+            try
+            {
+                if (Match(TokenType.VAR)) return VarDeclaration();
+
+                return Statement();
+            }
+            catch (ParseError error)
+            {
+                Synchronise();
+                return null;
+            }
         }
 
         private Statement Statement()
@@ -50,7 +65,22 @@ namespace LoxLangInCSharp
             Consume(TokenType.SEMICOLON, "Expected ';' after value");
             return new Statement.Print(value);
         }
-        
+
+        private Statement VarDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+            Expression initialiser = null;
+            
+            if (Match(TokenType.EQUAL))
+            {
+                initialiser = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+
+            return new Statement.Var(name, initialiser);
+        }
+
         private Statement ExpressionStatement()
         {
             Expression value = Expression();
@@ -138,6 +168,11 @@ namespace LoxLangInCSharp
             if (Match(TokenType.NUMBER, TokenType.STRING))
             {
                 return new Expression.Literal(Previous().literal);
+            }
+
+            if (Match(TokenType.IDENTIFIER))
+            {
+                return new Expression.Variable(Previous());
             }
 
             if (Match(TokenType.LEFT_PAREN))

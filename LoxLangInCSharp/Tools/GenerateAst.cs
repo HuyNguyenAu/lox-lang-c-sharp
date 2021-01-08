@@ -23,13 +23,15 @@ namespace Tools
                     "Grouping : Expression expression",
                     "Literal  : object value",
                     "Unary    : Token op, Expression right",
+                    "Variable : Token name"
                 }
             );
 
             DefineAst(outputDir, "Statement", new List<string>()
             {
                 "Expression : LoxLangInCSharp.Expression expression",
-                "Print      : LoxLangInCSharp.Expression expression"
+                "Print      : LoxLangInCSharp.Expression expression",
+                "Var      : Token name, LoxLangInCSharp.Expression initialiser",
             });
         }
 
