@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <StartupObject>LoxLangInCSharp.Program</StartupObject>
+    <StartupObject>Tools.GenerateAst</StartupObject>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
