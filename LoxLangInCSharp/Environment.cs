@@ -19,7 +19,14 @@ namespace LoxLangInCSharp
 
         public void Define(string name, object value)
         {
-            values.Add(name, value);
+            if (!values.ContainsKey(name))
+            {
+                values.Add(name, value);
+            }
+            else
+            {
+                values[name] = value;
+            }
         }
     }
 }
