@@ -8,7 +8,7 @@ namespace LoxLangInCSharp
     {
         private readonly Dictionary<string, object> values = new Dictionary<string, object>();
 
-        private object Get(Token name)
+        public object Get(Token name)
         {
             if (values.ContainsKey(name.lexeme))
             {

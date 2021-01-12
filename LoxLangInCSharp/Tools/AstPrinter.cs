@@ -62,5 +62,10 @@ namespace Tools
 
             Console.WriteLine(new AstPrinter().Print(expression));
         }
+
+        public string VisitVariableExpression(Expression.Variable expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 
-using Tools;
-
 namespace LoxLangInCSharp
 {
     class Program
@@ -17,7 +15,7 @@ namespace LoxLangInCSharp
             if (args.Length > 1)
             {
                 Console.WriteLine("Usage: jlox [script]");
-                Environment.Exit(64);
+                System.Environment.Exit(64);
             }
             else if (args.Length == 1)
             {
@@ -34,8 +32,8 @@ namespace LoxLangInCSharp
             try
             {
                 Run(File.ReadAllText(path));
-                if (hadError) Environment.Exit(65);
-                if (hadRuntimeError) Environment.Exit(70);
+                if (hadError) System.Environment.Exit(65);
+                if (hadRuntimeError) System.Environment.Exit(70);
             }
             catch (IOException e)
             {
@@ -96,7 +94,7 @@ namespace LoxLangInCSharp
 
         public static void RuntimeError(RuntimeError error)
         {
-            Console.Error.WriteLine($"{error.GetMessage()}{Environment.NewLine}" +
+            Console.Error.WriteLine($"{error.GetMessage()}{System.Environment.NewLine}" +
                 $"[line {error.GetToken().line}]");
             hadRuntimeError = true;
         }

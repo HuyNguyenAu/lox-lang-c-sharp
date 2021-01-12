@@ -19,7 +19,6 @@ namespace LoxLangInCSharp
             this.tokens = tokens;
         }
 
-        /* TODO: Stackoverflow error. Should we move this to the heap. */
         public List<Statement> Parse()
         {
             List<Statement> statements = new List<Statement>();

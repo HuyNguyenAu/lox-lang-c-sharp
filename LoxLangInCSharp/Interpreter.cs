@@ -6,6 +6,8 @@ namespace LoxLangInCSharp
 {
     public class Interpreter : Expression.IVisitor<object>, Statement.IVisitor<object>
     {
+        private Environment environment = new Environment();
+
         public object VisitBinaryExpression(Expression.Binary expression)
         {
             object left = Evaluate(expression.left);
@@ -99,6 +101,11 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitVariableExpression(Expression.Variable expression)
+        {
+            return environment.Get(expression.name);
+        }
+
         public object VisitExpressionStatement(Statement.Expression statement)
         {
             Evaluate(statement.expression);
@@ -109,6 +116,20 @@ namespace LoxLangInCSharp
         {
             object value = Evaluate(statement.expression);
             Console.WriteLine(Stringify(value));
+            return null;
+        }
+
+        public object VisitVarStatement(Statement.Var statement)
+        {
+            object value = null;
+
+            if (statement.initialiser != null)
+            {
+                value = Evaluate(statement.initialiser);
+            }
+
+            environment.Define(statement.name.lexeme, value);
+
             return null;
         }
 
@@ -185,11 +206,6 @@ namespace LoxLangInCSharp
             {
                 Program.RuntimeError(error);
             }
-        }
-
-        public object VisitVarStatement(Statement.Var statement)
-        {
-            throw new NotImplementedException();
         }
     }
 }

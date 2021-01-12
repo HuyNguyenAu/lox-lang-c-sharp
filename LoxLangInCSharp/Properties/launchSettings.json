@@ -1,8 +1,7 @@
 {
   "profiles": {
     "LoxLangInCSharp": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\Dev\\Desktop\""
+      "commandName": "Project"
     }
   }
 }
