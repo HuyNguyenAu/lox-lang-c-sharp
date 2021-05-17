@@ -3,8 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <StartupObject>LoxLangInCSharp.Program</StartupObject>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <RootNamespace>LoxLangInCSharp</RootNamespace>
+    <StartupObject>LoxLangInCSharp.Program</StartupObject>
   </PropertyGroup>
 
 </Project>
