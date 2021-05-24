@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Security;
-using System.Security;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace LoxLangInCSharp
 {
@@ -33,7 +29,7 @@ namespace LoxLangInCSharp
 
         private Expression Expression()
         {
-            return Equality();
+            return Assignment();
         }
 
         private Statement Declaration()
@@ -44,7 +40,7 @@ namespace LoxLangInCSharp
 
                 return Statement();
             }
-            catch (ParseError error)
+            catch (ParseError)
             {
                 Synchronise();
                 return null;
@@ -85,6 +81,27 @@ namespace LoxLangInCSharp
             Expression value = Expression();
             Consume(TokenType.SEMICOLON, "Expected ';' after expression.");
             return new Statement.Expression(value);
+        }
+
+        private Expression Assignment()
+        {
+            Expression expression = Equality();
+
+            if (Match(TokenType.EQUAL))
+            {
+                Token equals = Previous();
+                Expression value = Assignment();
+
+                if (expression.GetType() == typeof(Expression.Variable))
+                {
+                    Token name  = (expression as Expression.Variable).name;
+                    return new Expression.Assign(name, value);
+                }
+
+                Error(equals, "Invalid assignment target.");
+            }
+
+            return expression;
         }
 
         private Expression Equality()

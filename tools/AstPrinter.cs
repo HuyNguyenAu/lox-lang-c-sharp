@@ -67,5 +67,10 @@ namespace Tools
         {
             throw new NotImplementedException();
         }
+
+        public string VisitAssignExpression(Expression.Assign expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

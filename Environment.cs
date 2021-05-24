@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace LoxLangInCSharp
 {
@@ -14,18 +12,37 @@ namespace LoxLangInCSharp
             {
                 return values[name.lexeme];
             }
+
             throw new RuntimeError(name, $"Undefined variable '{name.lexeme}'.");
+        }
+
+        public void Assign(Token name, object value)
+        {
+            if (values.ContainsKey(name.lexeme))
+            {
+                Put(name.lexeme, value);
+            }
+            else
+            {
+                throw new RuntimeError(name, $"Undefined variable '{name.lexeme}'.");
+            }
         }
 
         public void Define(string name, object value)
         {
-            if (!values.ContainsKey(name))
+            Put(name, value);
+        }
+
+        // Equivalent to Java's Hash Map 'put' function.
+        private void Put(string key, object value)
+        {
+            if (values.ContainsKey(key))
             {
-                values.Add(name, value);
+                values[key] = value;
             }
             else
             {
-                values[name] = value;
+                values.Add(key, value);
             }
         }
     }

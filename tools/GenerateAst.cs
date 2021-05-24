@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace Tools
 {
@@ -19,6 +17,7 @@ namespace Tools
             string outputDir = args[0];
             DefineAst(outputDir, "Expression", new List<string>()
                 {
+                    "Assign   : Token name, Expression value", 
                     "Binary   : Expression left, Token op, Expression right",
                     "Grouping : Expression expression",
                     "Literal  : object value",

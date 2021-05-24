@@ -133,6 +133,13 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitAssignExpression(Expression.Assign expression)
+        {
+            object value = Evaluate(expression.value);
+            environment.Assign(expression.name, value);
+            return value;
+        }
+
         private void CheckNumberOperand(Token op, object operand)
         {
             if (operand.GetType() == typeof(double)) return;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace LoxLangInCSharp
@@ -7,11 +7,28 @@ namespace LoxLangInCSharp
     {
         public interface IVisitor<T>
         {
+            public T VisitAssignExpression(Assign expression);
             public T VisitBinaryExpression(Binary expression);
             public T VisitGroupingExpression(Grouping expression);
             public T VisitLiteralExpression(Literal expression);
             public T VisitUnaryExpression(Unary expression);
             public T VisitVariableExpression(Variable expression);
+        }
+        public class Assign : Expression
+        {
+            public Assign(Token name, Expression value)
+            {
+                this.name = name;
+                this.value = value;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitAssignExpression(this);
+            }
+
+            public readonly Token name;
+            public readonly Expression value;
         }
         public class Binary : Expression
         {

@@ -1,61 +1,49 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace LoxLangInCSharp
-{
-    public abstract class Statement
-    {
-        public interface IVisitor<T>
-        {
-            public T VisitExpressionStatement(Expression statement);
-            public T VisitPrintStatement(Print statement);
-            public T VisitVarStatement(Var statement);
-        }
-        public class Expression : Statement
-        {
-            public Expression(LoxLangInCSharp.Expression expression)
-            {
-                this.expression = expression;
-            }
+namespace LoxLangInCSharp {
+public abstract class Statement {
+public interface IVisitor<T> {
+public T VisitExpressionStatement (Expression statement);
+public T VisitPrintStatement (Print statement);
+public T VisitVarStatement (Var statement);
+}
+public class Expression : Statement {
+public Expression (LoxLangInCSharp.Expression expression) {
+this.expression = expression;
+}
 
-            public override T Accept<T>(IVisitor<T> visitor)
-            {
-                return visitor.VisitExpressionStatement(this);
-            }
+public override T Accept<T> (IVisitor<T> visitor) {
+return visitor.VisitExpressionStatement(this);
+}
 
-            public readonly LoxLangInCSharp.Expression expression;
-        }
-        public class Print : Statement
-        {
-            public Print(LoxLangInCSharp.Expression expression)
-            {
-                this.expression = expression;
-            }
+public readonly LoxLangInCSharp.Expression expression;
+}
+public class Print : Statement {
+public Print (LoxLangInCSharp.Expression expression) {
+this.expression = expression;
+}
 
-            public override T Accept<T>(IVisitor<T> visitor)
-            {
-                return visitor.VisitPrintStatement(this);
-            }
+public override T Accept<T> (IVisitor<T> visitor) {
+return visitor.VisitPrintStatement(this);
+}
 
-            public readonly LoxLangInCSharp.Expression expression;
-        }
-        public class Var : Statement
-        {
-            public Var(Token name, LoxLangInCSharp.Expression initialiser)
-            {
-                this.name = name;
-                this.initialiser = initialiser;
-            }
+public readonly LoxLangInCSharp.Expression expression;
+}
+public class Var : Statement {
+public Var (Token name, LoxLangInCSharp.Expression initialiser) {
+this.name = name;
+this.initialiser = initialiser;
+}
 
-            public override T Accept<T>(IVisitor<T> visitor)
-            {
-                return visitor.VisitVarStatement(this);
-            }
+public override T Accept<T> (IVisitor<T> visitor) {
+return visitor.VisitVarStatement(this);
+}
 
-            public readonly Token name;
-            public readonly LoxLangInCSharp.Expression initialiser;
-        }
+public readonly Token name;
+public readonly LoxLangInCSharp.Expression initialiser;
+}
 
-        public abstract T Accept<T>(IVisitor<T> visitor);
-    }
+public abstract T Accept<T> (IVisitor<T> visitor);
+}
 }
