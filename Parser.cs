@@ -50,6 +50,7 @@ namespace LoxLangInCSharp
         private Statement Statement()
         {
             if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
 
             return ExpressionStatement();
         }
@@ -81,6 +82,20 @@ namespace LoxLangInCSharp
             Expression value = Expression();
             Consume(TokenType.SEMICOLON, "Expected ';' after expression.");
             return new Statement.Expression(value);
+        }
+
+        private List<Statement> Block()
+        {
+            List<Statement> statements = new List<Statement>();
+
+            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
+            {
+                statements.Add(Declaration());
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+
+            return statements;
         }
 
         private Expression Assignment()

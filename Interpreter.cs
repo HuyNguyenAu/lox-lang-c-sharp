@@ -140,6 +140,12 @@ namespace LoxLangInCSharp
             return value;
         }
 
+        public object VisitBlockStatement(Statement.Block statement)
+        {
+            ExecuteBlock(statement.statements, new Environment(environment));
+            return null;
+        }
+
         private void CheckNumberOperand(Token op, object operand)
         {
             if (operand.GetType() == typeof(double)) return;
@@ -163,6 +169,25 @@ namespace LoxLangInCSharp
         private void Execute(Statement statement)
         {
             statement.Accept(this);
+        }
+
+        private void ExecuteBlock(List<Statement> statements, Environment environment)
+        {
+            Environment previous = this.environment;
+
+            try
+            {
+                this.environment  = environment;
+
+                foreach (Statement statement in statements)
+                {
+                    Execute(statement);
+                }
+            }
+            finally
+            {
+                this.environment = previous;
+            }
         }
 
         private bool IsTruthy(object obj)

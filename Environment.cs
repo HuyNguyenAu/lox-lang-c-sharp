@@ -4,7 +4,18 @@ namespace LoxLangInCSharp
 {
     public class Environment
     {
+        private readonly Environment enclosing = null;
         private readonly Dictionary<string, object> values = new Dictionary<string, object>();
+
+        /* Used for global scope enviroment. No enclosing
+        since it is at the end of the parent pointer tree. */
+        public Environment() { }
+
+        /* Create a new local scope nested inside the enclosing
+        outer one. */
+        public Environment(Environment enclosing) {
+            this.enclosing = enclosing;
+        }
 
         public object Get(Token name)
         {
@@ -12,6 +23,8 @@ namespace LoxLangInCSharp
             {
                 return values[name.lexeme];
             }
+
+            if (enclosing != null) return enclosing.Get(name);
 
             throw new RuntimeError(name, $"Undefined variable '{name.lexeme}'.");
         }
@@ -22,10 +35,12 @@ namespace LoxLangInCSharp
             {
                 Put(name.lexeme, value);
             }
-            else
-            {
-                throw new RuntimeError(name, $"Undefined variable '{name.lexeme}'.");
+
+            if (enclosing != null) {
+                enclosing.Assign(name, value);
             }
+
+            throw new RuntimeError(name, $"Undefined variable '{name.lexeme}'.");
         }
 
         public void Define(string name, object value)

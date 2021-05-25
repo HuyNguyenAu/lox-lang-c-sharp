@@ -28,9 +28,10 @@ namespace Tools
 
             DefineAst(outputDir, "Statement", new List<string>()
             {
+                "Block      : List<LoxLangInCSharp.Statement> statements",
                 "Expression : LoxLangInCSharp.Expression expression",
                 "Print      : LoxLangInCSharp.Expression expression",
-                "Var      : Token name, LoxLangInCSharp.Expression initialiser",
+                "Var        : Token name, LoxLangInCSharp.Expression initialiser",
             });
         }
 
