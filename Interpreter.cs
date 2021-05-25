@@ -126,6 +126,9 @@ namespace LoxLangInCSharp
             if (statement.initialiser != null)
             {
                 value = Evaluate(statement.initialiser);
+            } else
+            {
+                throw new RuntimeError(statement.name, $"Variable '{statement.name.lexeme}' not initialised.");
             }
 
             environment.Define(statement.name.lexeme, value);
