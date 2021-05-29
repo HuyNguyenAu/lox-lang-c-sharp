@@ -49,12 +49,68 @@ namespace LoxLangInCSharp
 
         private Statement Statement()
         {
+            if (Match(TokenType.FOR)) return ForStatement();
             if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
             if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
 
             return ExpressionStatement();
+        }
+
+        private Statement ForStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+            Statement initialiser = null;
+
+            if (Match(TokenType.SEMICOLON))
+            {
+
+            }
+            else if (Match(TokenType.VAR))
+            {
+                initialiser = VarDeclaration();
+            }
+            else
+            {
+                initialiser = ExpressionStatement();
+            }
+
+            Expression condition = Expression();
+
+            if (!Check(TokenType.SEMICOLON))
+            {
+                condition = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+            Expression increment = null;
+
+            if (!Check(TokenType.RIGHT_PAREN))
+            {
+                increment = Expression();
+            }
+
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+            Statement body = Statement();
+
+            if (increment != null)
+            {
+                body = new Statement.Block(new List<Statement> { body, new Statement.Expression(increment) });
+            }
+
+            if (condition == null) condition = new Expression.Literal(true);
+            body = new Statement.While(condition, body);
+
+            if (initialiser != null)
+            {
+                body = new Statement.Block(new List<Statement> { initialiser, body });
+            }
+
+            return body;
         }
 
         private Statement IfStatement()
