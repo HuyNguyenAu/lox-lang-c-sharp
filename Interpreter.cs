@@ -132,9 +132,6 @@ namespace LoxLangInCSharp
             {
                 Execute(statement.thenBranch);
             }
-            else if (statement.thenBranch != null) {
-                Execute(statement.thenBranch);
-            }
             else if (statement.elseBranch != null) {
                 Execute(statement.elseBranch);
             }
