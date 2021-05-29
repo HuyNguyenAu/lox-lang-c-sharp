@@ -5,9 +5,9 @@ if (true)
     print "true";
 
 if (false)
-    print "false";
+    print "no";
 else
-    print "true";
+    print "yes";
 
 var x = true;
 
