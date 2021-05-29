@@ -165,6 +165,15 @@ namespace LoxLangInCSharp
 
             return null;
         }
+        public object VisitWhileStatement(Statement.While statement)
+        {
+            while (IsTruthy(Evaluate(statement.condition)))
+            {
+                Execute(statement.body);
+            }
+
+            return null;
+        }
 
         public object VisitAssignExpression(Expression.Assign expression)
         {

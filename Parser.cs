@@ -51,6 +51,7 @@ namespace LoxLangInCSharp
         {
             if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
 
             return ExpressionStatement();
@@ -93,6 +94,16 @@ namespace LoxLangInCSharp
             Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
 
             return new Statement.Var(name, initialiser);
+        }
+
+        private Statement WhileStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expected '(' after 'while'.");
+            Expression condition = Expression();
+            Consume(TokenType.RIGHT_PAREN,  "Expected ')' after condition.");
+            Statement body = Statement();
+
+            return new Statement.While(condition, body);
         }
 
         private Statement ExpressionStatement()

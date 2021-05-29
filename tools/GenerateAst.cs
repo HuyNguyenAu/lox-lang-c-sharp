@@ -34,6 +34,7 @@ namespace Tools
                 "If         : LoxLangInCSharp.Expression condition, LoxLangInCSharp.Statement thenBranch, LoxLangInCSharp.Statement elseBranch",
                 "Print      : LoxLangInCSharp.Expression expression",
                 "Var        : Token name, LoxLangInCSharp.Expression initialiser",
+                "While      : LoxLangInCSharp.Expression condition, LoxLangInCSharp.Statement body",
             });
         }
 
