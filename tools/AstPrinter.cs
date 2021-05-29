@@ -72,5 +72,10 @@ namespace Tools
         {
             throw new NotImplementedException();
         }
+
+        public string VisitLogicalExpression(Expression.Logical expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

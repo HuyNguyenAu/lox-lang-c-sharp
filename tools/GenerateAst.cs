@@ -21,6 +21,7 @@ namespace Tools
                     "Binary   : Expression left, Token op, Expression right",
                     "Grouping : Expression expression",
                     "Literal  : object value",
+                    "Logical  : Expression left, Token op, Expression right",
                     "Unary    : Token op, Expression right",
                     "Variable : Token name"
                 }
@@ -30,6 +31,7 @@ namespace Tools
             {
                 "Block      : List<LoxLangInCSharp.Statement> statements",
                 "Expression : LoxLangInCSharp.Expression expression",
+                "If         : LoxLangInCSharp.Expression condition, LoxLangInCSharp.Statement thenBranch, LoxLangInCSharp.Statement elseBranch",
                 "Print      : LoxLangInCSharp.Expression expression",
                 "Var        : Token name, LoxLangInCSharp.Expression initialiser",
             });

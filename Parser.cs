@@ -49,10 +49,28 @@ namespace LoxLangInCSharp
 
         private Statement Statement()
         {
+            if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
 
             return ExpressionStatement();
+        }
+
+        private Statement IfStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expected '(' before expression.");
+            Expression condition = Expression();
+            Consume(TokenType.RIGHT_PAREN, "Expected ')' after expression.");
+
+            Statement thenBranch = Statement();
+            Statement elseBranch = null;
+
+            if (Match(TokenType.ELSE))
+            {
+                elseBranch = Statement();
+            }
+
+            return new Statement.If(condition, thenBranch, elseBranch);
         }
 
         private Statement PrintStatement()
@@ -100,7 +118,7 @@ namespace LoxLangInCSharp
 
         private Expression Assignment()
         {
-            Expression expression = Equality();
+            Expression expression = Or();
 
             if (Match(TokenType.EQUAL))
             {
@@ -114,6 +132,34 @@ namespace LoxLangInCSharp
                 }
 
                 Error(equals, "Invalid assignment target.");
+            }
+
+            return expression;
+        }
+        
+        private Expression Or()
+        {
+            Expression expression = And();
+
+            while (Match(TokenType.OR))
+            {
+                Token op = Previous();
+                Expression right = And();
+                expression = new Expression.Logical(expression, op, right);
+            }
+
+            return expression;
+        }
+
+        private Expression And()
+        {
+            Expression expression = Equality();
+
+            while (Match(TokenType.AND))
+            {
+                Token op = Previous();
+                Expression right = Equality();
+                expression = new Expression.Logical(expression, op, right);
             }
 
             return expression;

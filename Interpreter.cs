@@ -84,6 +84,20 @@ namespace LoxLangInCSharp
             return expression.value;
         }
 
+        public object VisitLogicalExpression(Expression.Logical expression)
+        {
+            object left = Evaluate(expression.left);
+
+            if (expression.op.type == TokenType.OR)
+            {
+                if (IsTruthy(left)) return left;
+            } else {
+                if (!IsTruthy(left)) return left;
+            }
+
+            return Evaluate(expression.right);
+        }
+
         public object VisitUnaryExpression(Expression.Unary expression)
         {
             object right = Evaluate(expression.right);
@@ -109,6 +123,22 @@ namespace LoxLangInCSharp
         public object VisitExpressionStatement(Statement.Expression statement)
         {
             Evaluate(statement.expression);
+            return null;
+        }
+
+        public object VisitIfStatement(Statement.If statement)
+        {
+            if (IsTruthy(Evaluate(statement.condition)))
+            {
+                Execute(statement.thenBranch);
+            }
+            else if (statement.thenBranch != null) {
+                Execute(statement.thenBranch);
+            }
+            else if (statement.elseBranch != null) {
+                Execute(statement.elseBranch);
+            }
+
             return null;
         }
 
