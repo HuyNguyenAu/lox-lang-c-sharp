@@ -8,3 +8,11 @@ if (false)
     print "false";
 else
     print "true";
+
+var x = true;
+
+if (true) {
+    x = false;
+}
+
+print x;

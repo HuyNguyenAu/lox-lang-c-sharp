@@ -1,0 +1,14 @@
+var global = "outside";
+
+if (false) {
+  var local = "inside";
+  print global + local;
+}
+
+var x = true;
+
+if (true) {
+    x = false;
+}
+
+print x;

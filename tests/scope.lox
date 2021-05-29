@@ -17,3 +17,9 @@ var c = "global c";
 print a;
 print b;
 print c;
+
+var global = "outside";
+{
+  var local = "inside";
+  print global + local;
+}
