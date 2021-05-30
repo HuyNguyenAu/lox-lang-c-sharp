@@ -94,8 +94,7 @@ namespace LoxLangInCSharp
 
         public static void RuntimeError(RuntimeError error)
         {
-            Console.Error.WriteLine($"{error.GetMessage()}{System.Environment.NewLine}" +
-                $"[line {error.GetToken().line}]");
+            Console.Error.WriteLine($"[line {error.GetToken().line + 1}]: {error.GetMessage()}{System.Environment.NewLine}");
             hadRuntimeError = true;
         }
     }
