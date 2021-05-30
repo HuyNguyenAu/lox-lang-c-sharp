@@ -1,0 +1,18 @@
+var limit = 10;
+
+for (var i = 0; i < limit; i = i + 1) {
+    var odd = false;
+
+    for (var j = 0; j < limit; j = j + 1) {
+        var k = (2 * j) + 1;
+
+        if (k == i) {
+            odd = true;
+            break;
+        }
+    }
+
+    if (odd) {
+        print i;
+    }
+}
