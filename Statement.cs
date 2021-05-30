@@ -9,6 +9,7 @@ namespace LoxLangInCSharp
         {
             public T VisitBlockStatement(Block statement);
             public T VisitBreakStatement(Break statement);
+            public T VisitContinueStatement(Continue statement);
             public T VisitExpressionStatement(Expression statement);
             public T VisitIfStatement(If statement);
             public T VisitPrintStatement(Print statement);
@@ -38,6 +39,18 @@ namespace LoxLangInCSharp
             public override T Accept<T>(IVisitor<T> visitor)
             {
                 return visitor.VisitBreakStatement(this);
+            }
+
+        }
+        public class Continue : Statement
+        {
+            public Continue()
+            {
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitContinueStatement(this);
             }
 
         }
