@@ -31,6 +31,7 @@ namespace Tools
             {
                 "Block      : List<LoxLangInCSharp.Statement> statements",
                 "Break      : ",
+                "Continue   : ",
                 "Expression : LoxLangInCSharp.Expression expression",
                 "If         : LoxLangInCSharp.Expression condition, LoxLangInCSharp.Statement thenBranch, LoxLangInCSharp.Statement elseBranch",
                 "Print      : LoxLangInCSharp.Expression expression",

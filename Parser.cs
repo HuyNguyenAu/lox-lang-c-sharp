@@ -56,6 +56,7 @@ namespace LoxLangInCSharp
             if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
             if (Match(TokenType.BREAK)) return BreakStatement();
+            if (Match(TokenType.CONTINUE)) return ContinueStatement();
 
             return ExpressionStatement();
         }
@@ -185,10 +186,20 @@ namespace LoxLangInCSharp
         {
             if (loopDepth <= 0)
             {
-                Error(Previous(), "Can only be use 'break' inside a loop.");
+                Error(Previous(), "Can only use 'break' inside a loop.");
             }
             Consume(TokenType.SEMICOLON, "Expected ';' after 'break'.");
             return new Statement.Break();
+        }
+
+        private Statement ContinueStatement()
+        {
+            if (loopDepth <= 0)
+            {
+                Error(Previous(), "Can only use 'continue' inside a loop.");
+            }
+            Consume(TokenType.SEMICOLON, "Expected ';' after 'continue'.");
+            return new Statement.Continue();
         }
 
         private Statement ExpressionStatement()

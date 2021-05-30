@@ -190,6 +190,10 @@ namespace LoxLangInCSharp
         {
             throw new BreakException();
         }
+        public object VisitContinueStatement(Statement.Continue statement)
+        {
+            return null;
+        }
 
         public object VisitAssignExpression(Expression.Assign expression)
         {
