@@ -34,6 +34,7 @@ namespace LoxLangInCSharp
             if (values.ContainsKey(name.lexeme))
             {
                 Put(name.lexeme, value);
+                return;
             }
 
             if (enclosing != null) {
