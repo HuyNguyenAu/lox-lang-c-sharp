@@ -9,6 +9,7 @@ namespace LoxLangInCSharp
 
         private readonly List<Token> tokens;
         private int current = 0;
+        private int loopDepth = 0;
 
         public Parser(List<Token> tokens)
         {
@@ -54,63 +55,73 @@ namespace LoxLangInCSharp
             if (Match(TokenType.PRINT)) return PrintStatement();
             if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
+            if (Match(TokenType.BREAK)) return BreakStatement();
 
             return ExpressionStatement();
         }
 
         private Statement ForStatement()
         {
-            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
-
-            Statement initialiser = null;
-
-            if (Match(TokenType.SEMICOLON))
+            try
             {
+                loopDepth++;
 
+                Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+                Statement initialiser = null;
+
+                if (Match(TokenType.SEMICOLON))
+                {
+
+                }
+                else if (Match(TokenType.VAR))
+                {
+                    initialiser = VarDeclaration();
+                }
+                else
+                {
+                    initialiser = ExpressionStatement();
+                }
+
+                Expression condition = Expression();
+
+                if (!Check(TokenType.SEMICOLON))
+                {
+                    condition = Expression();
+                }
+
+                Consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+                Expression increment = null;
+
+                if (!Check(TokenType.RIGHT_PAREN))
+                {
+                    increment = Expression();
+                }
+
+                Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+                Statement body = Statement();
+
+                if (increment != null)
+                {
+                    body = new Statement.Block(new List<Statement> { body, new Statement.Expression(increment) });
+                }
+
+                if (condition == null) condition = new Expression.Literal(true);
+                body = new Statement.While(condition, body);
+
+                if (initialiser != null)
+                {
+                    body = new Statement.Block(new List<Statement> { initialiser, body });
+                }
+
+                return body;
             }
-            else if (Match(TokenType.VAR))
+            finally
             {
-                initialiser = VarDeclaration();
+                loopDepth--;
             }
-            else
-            {
-                initialiser = ExpressionStatement();
-            }
-
-            Expression condition = Expression();
-
-            if (!Check(TokenType.SEMICOLON))
-            {
-                condition = Expression();
-            }
-
-            Consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
-
-            Expression increment = null;
-
-            if (!Check(TokenType.RIGHT_PAREN))
-            {
-                increment = Expression();
-            }
-
-            Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
-
-            Statement body = Statement();
-
-            if (increment != null)
-            {
-                body = new Statement.Block(new List<Statement> { body, new Statement.Expression(increment) });
-            }
-
-            if (condition == null) condition = new Expression.Literal(true);
-            body = new Statement.While(condition, body);
-
-            if (initialiser != null)
-            {
-                body = new Statement.Block(new List<Statement> { initialiser, body });
-            }
-
-            return body;
         }
 
         private Statement IfStatement()
@@ -141,7 +152,7 @@ namespace LoxLangInCSharp
         {
             Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
             Expression initialiser = null;
-            
+
             if (Match(TokenType.EQUAL))
             {
                 initialiser = Expression();
@@ -154,12 +165,30 @@ namespace LoxLangInCSharp
 
         private Statement WhileStatement()
         {
-            Consume(TokenType.LEFT_PAREN, "Expected '(' after 'while'.");
-            Expression condition = Expression();
-            Consume(TokenType.RIGHT_PAREN,  "Expected ')' after condition.");
-            Statement body = Statement();
+            try
+            {
+                loopDepth++;
+                Consume(TokenType.LEFT_PAREN, "Expected '(' after 'while'.");
+                Expression condition = Expression();
+                Consume(TokenType.RIGHT_PAREN, "Expected ')' after condition.");
+                Statement body = Statement();
 
-            return new Statement.While(condition, body);
+                return new Statement.While(condition, body);
+            }
+            finally
+            {
+                loopDepth--;
+            }
+        }
+
+        private Statement BreakStatement()
+        {
+            if (loopDepth <= 0)
+            {
+                Error(Previous(), "Can only be use 'break' inside a loop.");
+            }
+            Consume(TokenType.SEMICOLON, "Expected ';' after 'break'.");
+            return new Statement.Break();
         }
 
         private Statement ExpressionStatement()
@@ -194,7 +223,7 @@ namespace LoxLangInCSharp
 
                 if (expression.GetType() == typeof(Expression.Variable))
                 {
-                    Token name  = (expression as Expression.Variable).name;
+                    Token name = (expression as Expression.Variable).name;
                     return new Expression.Assign(name, value);
                 }
 
@@ -203,7 +232,7 @@ namespace LoxLangInCSharp
 
             return expression;
         }
-        
+
         private Expression Or()
         {
             Expression expression = And();

@@ -8,6 +8,7 @@ namespace LoxLangInCSharp
         public interface IVisitor<T>
         {
             public T VisitBlockStatement(Block statement);
+            public T VisitBreakStatement(Break statement);
             public T VisitExpressionStatement(Expression statement);
             public T VisitIfStatement(If statement);
             public T VisitPrintStatement(Print statement);
@@ -27,6 +28,18 @@ namespace LoxLangInCSharp
             }
 
             public readonly List<LoxLangInCSharp.Statement> statements;
+        }
+        public class Break : Statement
+        {
+            public Break()
+            {
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitBreakStatement(this);
+            }
+
         }
         public class Expression : Statement
         {

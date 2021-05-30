@@ -60,7 +60,7 @@ namespace LoxLangInCSharp
                         return (string)left + (string)right;
                     }
 
-                    throw new RuntimeError(expression.op, 
+                    throw new RuntimeError(expression.op,
                         "Operands must be two numbers or two strings.");
 
                 case TokenType.BANG_EQUAL:
@@ -91,7 +91,9 @@ namespace LoxLangInCSharp
             if (expression.op.type == TokenType.OR)
             {
                 if (IsTruthy(left)) return left;
-            } else {
+            }
+            else
+            {
                 if (!IsTruthy(left)) return left;
             }
 
@@ -132,7 +134,8 @@ namespace LoxLangInCSharp
             {
                 Execute(statement.thenBranch);
             }
-            else if (statement.elseBranch != null) {
+            else if (statement.elseBranch != null)
+            {
                 Execute(statement.elseBranch);
             }
 
@@ -153,7 +156,8 @@ namespace LoxLangInCSharp
             if (statement.initialiser != null)
             {
                 value = Evaluate(statement.initialiser);
-            } else
+            }
+            else
             {
                 throw new RuntimeError(statement.name, $"Variable '{statement.name.lexeme}' not initialised.");
             }
@@ -164,12 +168,27 @@ namespace LoxLangInCSharp
         }
         public object VisitWhileStatement(Statement.While statement)
         {
-            while (IsTruthy(Evaluate(statement.condition)))
+            try
             {
-                Execute(statement.body);
+                while (IsTruthy(Evaluate(statement.condition)))
+                {
+                    Execute(statement.body);
+                }
+
+                return null;
+            }
+            catch (BreakException)
+            {
+                /* Don't do anything, this is used to break out of the loop when we
+                encounter a break statement. */
             }
 
             return null;
+        }
+
+        public object VisitBreakStatement(Statement.Break statement)
+        {
+            throw new BreakException();
         }
 
         public object VisitAssignExpression(Expression.Assign expression)
@@ -216,7 +235,7 @@ namespace LoxLangInCSharp
 
             try
             {
-                this.environment  = environment;
+                this.environment = environment;
 
                 foreach (Statement statement in statements)
                 {
@@ -252,7 +271,7 @@ namespace LoxLangInCSharp
             if (obj.GetType() == typeof(double))
             {
                 string text = obj.ToString();
-                
+
                 if (text.EndsWith(".0"))
                 {
                     text = text.Substring(0, text.Length - 2);
@@ -279,4 +298,6 @@ namespace LoxLangInCSharp
             }
         }
     }
+
+    public class BreakException : SystemException { }
 }

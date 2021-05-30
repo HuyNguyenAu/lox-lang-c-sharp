@@ -17,7 +17,7 @@ namespace Tools
             string outputDir = args[0];
             DefineAst(outputDir, "Expression", new List<string>()
                 {
-                    "Assign   : Token name, Expression value", 
+                    "Assign   : Token name, Expression value",
                     "Binary   : Expression left, Token op, Expression right",
                     "Grouping : Expression expression",
                     "Literal  : object value",
@@ -30,6 +30,7 @@ namespace Tools
             DefineAst(outputDir, "Statement", new List<string>()
             {
                 "Block      : List<LoxLangInCSharp.Statement> statements",
+                "Break      : ",
                 "Expression : LoxLangInCSharp.Expression expression",
                 "If         : LoxLangInCSharp.Expression condition, LoxLangInCSharp.Statement thenBranch, LoxLangInCSharp.Statement elseBranch",
                 "Print      : LoxLangInCSharp.Expression expression",
@@ -86,7 +87,13 @@ namespace Tools
             writer.WriteLine($"public {className} ({fieldList}) {{");
 
             // Store parameters.
-            string[] fields = fieldList.Split(", ");
+            List<string> fields = new List<string>();
+
+            if (fieldList.Length > 0)
+            {
+                fields.AddRange(fieldList.Split(", "));
+            }
+
             foreach (string field in fields)
             {
                 string name = field.Split(" ")[1];
