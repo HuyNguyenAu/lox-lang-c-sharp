@@ -74,6 +74,32 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitCallExpression(Expression.Call expression)
+        {
+            object callee = Evaluate(expression.callee);
+
+            List<object> arguments = new List<object>();
+
+            foreach (Expression argument in arguments)
+            {
+                arguments.Add(Evaluate(argument));
+            }
+
+            if (callee.GetType() != typeof(Callable))
+            {
+                throw new RuntimeError(expression.parenthesis, "Can only call functions and classes.");
+            }
+
+            Callable function = (Callable)callee;
+
+            if (arguments.Count != function.Arity())
+            {
+                throw new RuntimeError(expression.parenthesis, $"Expected {function.Arity()} arguments but got {arguments.Count}.");
+            }
+
+            return function.Call(this, arguments);
+        }
+
         public object VisitGroupingExpression(Expression.Grouping expression)
         {
             return Evaluate(expression.expression);

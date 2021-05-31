@@ -77,5 +77,10 @@ namespace Tools
         {
             throw new NotImplementedException();
         }
+
+        public string VisitCallExpression(Expression.Call expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

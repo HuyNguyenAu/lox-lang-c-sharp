@@ -340,7 +340,48 @@ namespace LoxLangInCSharp
                 return new Expression.Unary(op, right);
             }
 
-            return Primary();
+            return Call();
+        }
+
+        private Expression Call()
+        {
+            Expression expression = Primary();
+
+            while (true)
+            {
+                if (Match(TokenType.LEFT_PAREN))
+                {
+                    expression = FinishCall(expression);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return expression;
+        }
+
+        private Expression FinishCall(Expression callee)
+        {
+            List<Expression> arguments = new List<Expression>();
+
+            if (!Check(TokenType.RIGHT_PAREN))
+            {
+                do
+                {
+                    if (arguments.Count >= 255)
+                    {
+                        Error(Peek(), "Can't have more than 255 arguments.");
+                    }
+                    arguments.Add(Expression());
+                }
+                while (Match(TokenType.COMMA));
+            }
+
+            Token parenthesis = Consume(TokenType.RIGHT_PAREN, "Expected ')' after arguments.");
+
+            return new Expression.Call(callee, parenthesis, arguments);
         }
 
         private Expression Primary()

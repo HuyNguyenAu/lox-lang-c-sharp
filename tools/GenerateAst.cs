@@ -19,6 +19,7 @@ namespace Tools
                 {
                     "Assign   : Token name, Expression value",
                     "Binary   : Expression left, Token op, Expression right",
+                    "Call     : Expression callee, Token parenthesis, List<Expression> arguments",
                     "Grouping : Expression expression",
                     "Literal  : object value",
                     "Logical  : Expression left, Token op, Expression right",
