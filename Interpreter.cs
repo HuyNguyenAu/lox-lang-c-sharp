@@ -6,7 +6,35 @@ namespace LoxLangInCSharp
 {
     public class Interpreter : Expression.IVisitor<object>, Statement.IVisitor<object>
     {
-        private Environment environment = new Environment();
+        private readonly Environment globals = new Environment();
+        /* Unlike Java, we cannot refer to globals since it is a non static field.
+        We'll use the initialiser method to set this. */
+        private Environment environment = null;
+
+        // C# does not have anonymous classes.
+        private class Clock : Callable
+        {
+            public int Arity()
+            {
+                return 0;
+            }
+
+            public object Call(Interpreter interpreter, List<object> arguments)
+            {
+                return (double)DateTimeOffset.Now.ToUnixTimeMilliseconds() / 1000.0;
+            }
+
+            public override string ToString()
+            {
+                return "<native fn>";
+            }
+        }
+
+        public Interpreter() {
+            environment = globals;
+
+            globals.Define("clock", new Clock());
+        }
 
         public object VisitBinaryExpression(Expression.Binary expression)
         {
