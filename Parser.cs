@@ -37,6 +37,7 @@ namespace LoxLangInCSharp
         {
             try
             {
+                if (Match(TokenType.FUN)) return Function("function");
                 if (Match(TokenType.VAR)) return VarDeclaration();
 
                 return Statement();
@@ -207,6 +208,32 @@ namespace LoxLangInCSharp
             Expression value = Expression();
             Consume(TokenType.SEMICOLON, "Expected ';' after expression.");
             return new Statement.Expression(value);
+        }
+
+        private Statement.Function Function(string kind)
+        {
+            Token name = Consume(TokenType.IDENTIFIER, $"Expect {kind} name.");
+            Consume(TokenType.LEFT_PAREN, $"Expect '(' after {kind} name.");
+
+            List<Token> parameters = new List<Token>();
+
+            if (!Check(TokenType.RIGHT_PAREN))
+            {
+                do {
+                    if (parameters.Count >= 255) {
+                        Error(Peek(), "Can't have more than 255 parameters.");
+                    }
+
+                    parameters.Add(Consume(TokenType.IDENTIFIER, "Expect parameter name."));
+                } while (Match(TokenType.COMMA));
+            }
+
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.");
+            Consume(TokenType.LEFT_BRACE, $"Expect '{{' before '{kind}' body.");
+
+            List<Statement> body = Block();
+
+            return new Statement.Function(name, parameters, body);
         }
 
         private List<Statement> Block()

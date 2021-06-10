@@ -6,7 +6,7 @@ namespace LoxLangInCSharp
 {
     public class Interpreter : Expression.IVisitor<object>, Statement.IVisitor<object>
     {
-        private readonly Environment globals = new Environment();
+        public readonly Environment globals = new Environment();
         /* Unlike Java, we cannot refer to globals since it is a non static field.
         We'll use the initialiser method to set this. */
         private Environment environment = null;
@@ -108,12 +108,12 @@ namespace LoxLangInCSharp
 
             List<object> arguments = new List<object>();
 
-            foreach (Expression argument in arguments)
+            foreach (Expression argument in expression.arguments)
             {
                 arguments.Add(Evaluate(argument));
             }
 
-            if (callee.GetType() != typeof(Callable))
+            if (!(callee is Callable))
             {
                 throw new RuntimeError(expression.parenthesis, "Can only call functions and classes.");
             }
@@ -179,6 +179,13 @@ namespace LoxLangInCSharp
         public object VisitExpressionStatement(Statement.Expression statement)
         {
             Evaluate(statement.expression);
+            return null;
+        }
+
+         public object VisitFunctionStatement(Statement.Function statement)
+        {
+            Function function = new Function(statement);
+            environment.Define(statement.name.lexeme, function);
             return null;
         }
 
@@ -287,7 +294,7 @@ namespace LoxLangInCSharp
             statement.Accept(this);
         }
 
-        private void ExecuteBlock(List<Statement> statements, Environment environment)
+        public void ExecuteBlock(List<Statement> statements, Environment environment)
         {
             Environment previous = this.environment;
 
