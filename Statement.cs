@@ -14,6 +14,7 @@ namespace LoxLangInCSharp
             public T VisitFunctionStatement(Function statement);
             public T VisitIfStatement(If statement);
             public T VisitPrintStatement(Print statement);
+            public T VisitReturnStatement(Return statement);
             public T VisitVarStatement(Var statement);
             public T VisitWhileStatement(While statement);
         }
@@ -85,7 +86,7 @@ namespace LoxLangInCSharp
 
             public readonly Token name;
             public readonly List<Token> parameters;
-public readonly List<LoxLangInCSharp.Statement> body;
+            public readonly List<LoxLangInCSharp.Statement> body;
         }
         public class If : Statement
         {
@@ -118,6 +119,22 @@ public readonly List<LoxLangInCSharp.Statement> body;
             }
 
             public readonly LoxLangInCSharp.Expression expression;
+        }
+        public class Return : Statement
+        {
+            public Return(Token keyword, LoxLangInCSharp.Expression value)
+            {
+                this.keyword = keyword;
+                this.value = value;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitReturnStatement(this);
+            }
+
+            public readonly Token keyword;
+            public readonly LoxLangInCSharp.Expression value;
         }
         public class Var : Statement
         {

@@ -54,6 +54,7 @@ namespace LoxLangInCSharp
             if (Match(TokenType.FOR)) return ForStatement();
             if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.RETURN)) return ReturnStatement();
             if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Statement.Block(Block());
             if (Match(TokenType.BREAK)) return BreakStatement();
@@ -148,6 +149,20 @@ namespace LoxLangInCSharp
             Expression value = Expression();
             Consume(TokenType.SEMICOLON, "Expected ';' after value");
             return new Statement.Print(value);
+        }
+
+        private Statement ReturnStatement()
+        {
+            Token keyword = Previous();
+            Expression value = null;
+
+            if (!Check(TokenType.SEMICOLON))
+            {
+                value = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expected ';' after value");
+            return new Statement.Return(keyword, value);
         }
 
         private Statement VarDeclaration()

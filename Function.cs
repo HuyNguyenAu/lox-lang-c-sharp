@@ -25,7 +25,15 @@ namespace LoxLangInCSharp
                 environment.Define(declaration.parameters[i].lexeme, arguments[i]);
             }
 
-            interpreter.ExecuteBlock(declaration.body, environment);
+            try
+            {
+                interpreter.ExecuteBlock(declaration.body, environment);
+            }
+            catch (ReturnException value)
+            {
+                return value.value;
+            }
+
             return null;
         }
 

@@ -210,6 +210,17 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitReturnStatement(Statement.Return statement)
+        {
+            object value = null;
+            
+            if (statement.value != null){
+                value = Evaluate(statement.value);
+            }
+
+            throw new ReturnException(value);
+        }
+
         public object VisitVarStatement(Statement.Var statement)
         {
             object value = null;
