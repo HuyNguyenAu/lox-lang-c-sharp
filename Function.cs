@@ -5,10 +5,12 @@ namespace LoxLangInCSharp
     public class Function : Callable
     {
         private readonly Statement.Function declaration = null;
+        private readonly Environment closure = null;
 
-        public Function(Statement.Function declaration)
+        public Function(Statement.Function declaration, Environment closure)
         {
             this.declaration = declaration;
+            this.closure = closure;
         }
 
         public int Arity()
@@ -18,7 +20,7 @@ namespace LoxLangInCSharp
 
         public object Call(Interpreter interpreter, List<object> arguments)
         {
-            Environment environment = new Environment(interpreter.globals);
+            Environment environment = new Environment(closure);
 
             for (int i = 0; i < declaration.parameters.Count; i++)
             {

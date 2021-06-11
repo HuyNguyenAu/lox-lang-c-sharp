@@ -184,7 +184,7 @@ namespace LoxLangInCSharp
 
          public object VisitFunctionStatement(Statement.Function statement)
         {
-            Function function = new Function(statement);
+            Function function = new Function(statement, environment);
             environment.Define(statement.name.lexeme, function);
             return null;
         }
