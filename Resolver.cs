@@ -33,6 +33,20 @@ namespace LoxLangInCSharp {
             scopes.Pop();
         }
 
+        private void Declare(Token name)
+        {
+            if (scopes.Count <= 0) return;
+
+            Dictionary<string, bool> scope = scopes.Peek();
+            Put(name.lexeme, false, scope);
+        }
+
+        private void Define(Token name)
+        {
+            if (scopes.Count <= 0) return;
+            Put(name.lexeme, true, scopes.Peek());
+        }
+
         private void Resolve(Expression expression)
         {
             expression.Accept(this);
@@ -40,12 +54,12 @@ namespace LoxLangInCSharp {
 
         public object VisitAssignExpression(Expression.Assign expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitBinaryExpression(Expression.Binary expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitBlockStatement(Statement.Block statement)
@@ -58,77 +72,98 @@ namespace LoxLangInCSharp {
 
         public object VisitBreakStatement(Statement.Break statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitCallExpression(Expression.Call expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitContinueStatement(Statement.Continue statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitExpressionStatement(Statement.Expression statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitFunctionStatement(Statement.Function statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitGroupingExpression(Expression.Grouping expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitIfStatement(Statement.If statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitLiteralExpression(Expression.Literal expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitLogicalExpression(Expression.Logical expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitPrintStatement(Statement.Print statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitReturnStatement(Statement.Return statement)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitUnaryExpression(Expression.Unary expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitVariableExpression(Expression.Variable expression)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public object VisitVarStatement(Statement.Var statement)
         {
-            throw new System.NotImplementedException();
+            Declare(statement.name);
+
+            if (statement.initialiser != null)
+            {
+                Resolve(statement.initialiser);
+            }
+
+            Define(statement.name);
+            return null;
         }
 
         public object VisitWhileStatement(Statement.While statement)
         {
-            throw new System.NotImplementedException();
+            return null;
+        }
+
+        // Equivalent to Java's Hash Map 'put' function.
+        private void Put(string key, bool value, Dictionary<string, bool> scope)
+        {
+            if (scope.ContainsKey(key))
+            {
+                scope[key] = value;
+            }
+            else
+            {
+                scope.Add(key, value);
+            }
         }
     }
 }
