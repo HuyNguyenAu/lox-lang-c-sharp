@@ -288,7 +288,17 @@ namespace LoxLangInCSharp
         public object VisitAssignExpression(Expression.Assign expression)
         {
             object value = Evaluate(expression.value);
-            environment.Assign(expression.name, value);
+
+            bool distance_exists = locals.TryGetValue(expression, out int distance);
+            if (distance_exists)
+            {
+                environment.AssignAt(distance, expression.name, value);
+            }
+            else
+            {
+                globals.Assign(expression.name, value);
+            }
+            
             return value;
         }
 

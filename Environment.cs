@@ -67,6 +67,11 @@ namespace LoxLangInCSharp
             return Ancestor(distance).values[name];
         }
 
+        public void AssignAt(int distance, Token name, object value)
+        {
+            Ancestor(distance).Put(name.lexeme, value);
+        }
+
         // Equivalent to Java's Hash Map 'put' function.
         private void Put(string key, object value)
         {
