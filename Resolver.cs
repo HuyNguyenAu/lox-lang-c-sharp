@@ -47,6 +47,22 @@ namespace LoxLangInCSharp {
             Put(name.lexeme, true, scopes.Peek());
         }
 
+        private void ResolveLocal(Expression expression, Token name)
+        {
+            // In C# we can't access a stack using indexes. But we can in Java.
+            List<Dictionary<string, bool>> temp = new List<Dictionary<string, bool>>();
+            temp.AddRange(scopes.ToArray());
+
+            for (int i = temp.Count - 1; i >= 0; i--)
+            {
+                if (temp[i].ContainsKey(name.lexeme))
+                {
+                    interpreter.Resolve(expression, temp.Count - 1 - i);
+                    return;
+                }
+            }
+        }
+
         private void Resolve(Expression expression)
         {
             expression.Accept(this);
@@ -132,6 +148,12 @@ namespace LoxLangInCSharp {
 
         public object VisitVariableExpression(Expression.Variable expression)
         {
+            if (scopes.Count > 0 && scopes.Peek()[expression.name.lexeme] == false)
+            {
+                Program.Error(expression.name, "Can't read local variable in its own initializer.");
+            }
+
+            ResolveLocal(expression, expression.name);
             return null;
         }
 
