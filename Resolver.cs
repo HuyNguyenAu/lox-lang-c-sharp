@@ -70,6 +70,8 @@ namespace LoxLangInCSharp {
 
         public object VisitAssignExpression(Expression.Assign expression)
         {
+            Resolve(expression.value);
+            ResolveLocal(expression, expression.name);
             return null;
         }
 
