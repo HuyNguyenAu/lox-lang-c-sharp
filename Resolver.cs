@@ -18,6 +18,18 @@ namespace LoxLangInCSharp {
             }
         }
 
+        private void ResolveFunction(Statement.Function function)
+        {
+            BeginScope();
+            foreach (Token parameter in function.parameters)
+            {
+                Define(parameter);
+                Define(parameter);
+            }
+            Resolve(function.body);
+            EndScope();
+        }
+
         private void Resolve(Statement statement)
         {
             statement.Accept(this);
@@ -110,6 +122,9 @@ namespace LoxLangInCSharp {
 
         public object VisitFunctionStatement(Statement.Function statement)
         {
+            Declare(statement.name);
+            Define(statement.name);
+            ResolveFunction(statement);
             return null;
         }
 
