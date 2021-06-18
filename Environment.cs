@@ -50,6 +50,23 @@ namespace LoxLangInCSharp
             Put(name, value);
         }
 
+        private Environment Ancestor(int distance)
+        {
+            Environment environment = this;
+
+            for (int i = 0; i < distance; i++)
+            {
+                environment = environment.enclosing;
+            }
+
+            return environment;
+        }
+
+        public object IndexOf(int distance, string name)
+        {
+            return Ancestor(distance).values[name];
+        }
+
         // Equivalent to Java's Hash Map 'put' function.
         private void Put(string key, object value)
         {

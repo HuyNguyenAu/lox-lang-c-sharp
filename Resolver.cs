@@ -89,6 +89,8 @@ namespace LoxLangInCSharp {
 
         public object VisitBinaryExpression(Expression.Binary expression)
         {
+            Resolve(expression.left);
+            Resolve(expression.right);
             return null;
         }
 
@@ -107,6 +109,12 @@ namespace LoxLangInCSharp {
 
         public object VisitCallExpression(Expression.Call expression)
         {
+            Resolve(expression.callee);
+
+            foreach (Expression argument in expression.arguments)
+            {
+                Resolve(argument);
+            }
             return null;
         }
 
@@ -117,6 +125,7 @@ namespace LoxLangInCSharp {
 
         public object VisitExpressionStatement(Statement.Expression statement)
         {
+            Resolve(statement.expression);
             return null;
         }
 
@@ -130,11 +139,15 @@ namespace LoxLangInCSharp {
 
         public object VisitGroupingExpression(Expression.Grouping expression)
         {
+            Resolve(expression.expression);
             return null;
         }
 
         public object VisitIfStatement(Statement.If statement)
         {
+            Resolve(statement.condition);
+            Resolve(statement.thenBranch);
+            if (statement.elseBranch != null) Resolve(statement.elseBranch);
             return null;
         }
 
@@ -145,21 +158,29 @@ namespace LoxLangInCSharp {
 
         public object VisitLogicalExpression(Expression.Logical expression)
         {
+            Resolve(expression.left);
+            Resolve(expression.right);
             return null;
         }
 
         public object VisitPrintStatement(Statement.Print statement)
         {
+            Resolve(statement.expression);
             return null;
         }
 
         public object VisitReturnStatement(Statement.Return statement)
         {
+            if (statement.value != null)
+            {
+                Resolve(statement.value);
+            }
             return null;
         }
 
         public object VisitUnaryExpression(Expression.Unary expression)
         {
+            Resolve(expression.right);
             return null;
         }
 
@@ -189,6 +210,8 @@ namespace LoxLangInCSharp {
 
         public object VisitWhileStatement(Statement.While statement)
         {
+            Resolve(statement.condition);
+            Resolve(statement.body);
             return null;
         }
 

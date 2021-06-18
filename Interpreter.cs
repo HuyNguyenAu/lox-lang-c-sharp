@@ -10,6 +10,7 @@ namespace LoxLangInCSharp
         /* Unlike Java, we cannot refer to globals since it is a non static field.
         We'll use the initialiser method to set this. */
         private Environment environment = null;
+        private readonly Dictionary<Expression, int> locals = new Dictionary<Expression, int>();
 
         // C# does not have anonymous classes.
         private class Clock : Callable
@@ -30,7 +31,8 @@ namespace LoxLangInCSharp
             }
         }
 
-        public Interpreter() {
+        public Interpreter()
+        {
             environment = globals;
 
             globals.Define("clock", new Clock());
@@ -173,7 +175,22 @@ namespace LoxLangInCSharp
 
         public object VisitVariableExpression(Expression.Variable expression)
         {
-            return environment.Get(expression.name);
+            return LookupVariable(expression.name, expression);
+        }
+
+        private object LookupVariable(Token name, Expression expression)
+        {
+            // Java HashMap get returns null when an item does not exist.
+            bool distance_exists = locals.TryGetValue(expression, out int distance);
+
+            if (distance_exists)
+            {
+                return environment.IndexOf(distance, name.lexeme);
+            }
+            else
+            {
+                return globals.Get(name);
+            }
         }
 
         public object VisitExpressionStatement(Statement.Expression statement)
@@ -182,7 +199,7 @@ namespace LoxLangInCSharp
             return null;
         }
 
-         public object VisitFunctionStatement(Statement.Function statement)
+        public object VisitFunctionStatement(Statement.Function statement)
         {
             Function function = new Function(statement, environment);
             environment.Define(statement.name.lexeme, function);
@@ -213,8 +230,9 @@ namespace LoxLangInCSharp
         public object VisitReturnStatement(Statement.Return statement)
         {
             object value = null;
-            
-            if (statement.value != null){
+
+            if (statement.value != null)
+            {
                 value = Evaluate(statement.value);
             }
 
@@ -305,6 +323,11 @@ namespace LoxLangInCSharp
             statement.Accept(this);
         }
 
+        public void Resolve(Expression expression, int depth)
+        {
+            Put(expression, depth, locals);
+        }
+
         public void ExecuteBlock(List<Statement> statements, Environment environment)
         {
             Environment previous = this.environment;
@@ -371,6 +394,19 @@ namespace LoxLangInCSharp
             catch (RuntimeError error)
             {
                 Program.RuntimeError(error);
+            }
+        }
+
+        // Equivalent to Java's Hash Map 'put' function.
+        private void Put(Expression key, int value, Dictionary<Expression, int> locals)
+        {
+            if (locals.ContainsKey(key))
+            {
+                locals[key] = value;
+            }
+            else
+            {
+                locals.Add(key, value);
             }
         }
     }
