@@ -10,7 +10,7 @@ namespace LoxLangInCSharp {
             this.interpreter = interpreter;
         }
 
-        private void Resolve(List<Statement> statements)
+        public void Resolve(List<Statement> statements)
         {
             foreach (Statement statement in statements)
             {
@@ -50,6 +50,12 @@ namespace LoxLangInCSharp {
             if (scopes.Count <= 0) return;
 
             Dictionary<string, bool> scope = scopes.Peek();
+
+            if (scope.ContainsKey(name.lexeme))
+            {
+                Program.Error(name, "Already variable with this name in this scope.");
+            }
+
             Put(name.lexeme, false, scope);
         }
 
