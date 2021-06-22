@@ -76,8 +76,12 @@ namespace LoxLangInCSharp
 
             // Stop if we run into an error.
             if (hadError) return;
+
             // TEMP: Exit early when expression is invalid.
             if (statements.Count <= 0) return;
+
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(statements);
 
             interpreter.Interpret(statements);
         }
