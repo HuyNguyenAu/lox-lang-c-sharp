@@ -33,7 +33,7 @@ namespace LoxLangInCSharp
         {
             if (values.ContainsKey(name.lexeme))
             {
-                Put(name.lexeme, value);
+                values[name.lexeme] = value;
                 return;
             }
 
@@ -47,42 +47,7 @@ namespace LoxLangInCSharp
 
         public void Define(string name, object value)
         {
-            Put(name, value);
-        }
-
-        private Environment Ancestor(int distance)
-        {
-            Environment environment = this;
-
-            for (int i = 0; i < distance; i++)
-            {
-                environment = environment.enclosing;
-            }
-
-            return environment;
-        }
-
-        public object IndexOf(int distance, string name)
-        {
-            return Ancestor(distance).values[name];
-        }
-
-        public void AssignAt(int distance, Token name, object value)
-        {
-            Ancestor(distance).Put(name.lexeme, value);
-        }
-
-        // Equivalent to Java's Hash Map 'put' function.
-        private void Put(string key, object value)
-        {
-            if (values.ContainsKey(key))
-            {
-                values[key] = value;
-            }
-            else
-            {
-                values.Add(key, value);
-            }
+            values[name] = value;
         }
     }
 }
