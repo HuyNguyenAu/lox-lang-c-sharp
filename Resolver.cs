@@ -1,237 +1,246 @@
-// using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 
-// namespace LoxLangInCSharp {
-//     public class Resolver : Expression.IVisitor<object>, Statement.IVisitor<object> {
-//         private readonly Interpreter interpreter = null;
-//         private readonly Stack<Dictionary<string, bool>> scopes = new Stack<Dictionary<string, bool>>();
+namespace LoxLangInCSharp
+{
+    public class Resolver : Expression.IVisitor<object>, Statement.IVisitor<object>
+    {
+        private readonly Interpreter interpreter = null;
+        private readonly Stack<Dictionary<string, bool>> scopes = new Stack<Dictionary<string, bool>>();
+        private FunctionType currentFunction = FunctionType.NONE;
+        private enum FunctionType
+        {
+            NONE,
+            FUNCTION
+        }
 
-//         public Resolver(Interpreter interpreter)
-//         {
-//             this.interpreter = interpreter;
-//         }
+        public Resolver(Interpreter interpreter)
+        {
+            this.interpreter = interpreter;
+        }
 
-//         public void Resolve(List<Statement> statements)
-//         {
-//             foreach (Statement statement in statements)
-//             {
-//                 Resolve(statement);
-//             }
-//         }
+        public void Resolve(List<Statement> statements)
+        {
+            foreach (Statement statement in statements)
+            {
+                Resolve(statement);
+            }
+        }
 
-//         private void ResolveFunction(Statement.Function function)
-//         {
-//             BeginScope();
-//             foreach (Token parameter in function.parameters)
-//             {
-//                 Define(parameter);
-//                 Define(parameter);
-//             }
-//             Resolve(function.body);
-//             EndScope();
-//         }
+        private void ResolveFunction(Statement.Function function, FunctionType type)
+        {
+            FunctionType enclosingFunction = currentFunction;
+            currentFunction = type;
 
-//         private void Resolve(Statement statement)
-//         {
-//             statement.Accept(this);
-//         }
+            BeginScope();
+            foreach (Token parameter in function.parameters)
+            {
+                Declare(parameter);
+                Define(parameter);
+            }
+            Resolve(function.body);
+            EndScope();
+            currentFunction = enclosingFunction;
+        }
 
-//         private void BeginScope()
-//         {
-//             scopes.Push(new Dictionary<string, bool>());
-//         }
+        private void Resolve(Statement statement)
+        {
+            statement.Accept(this);
+        }
 
-//         private void EndScope()
-//         {
-//             scopes.Pop();
-//         }
+        private void BeginScope()
+        {
+            scopes.Push(new Dictionary<string, bool>());
+        }
 
-//         private void Declare(Token name)
-//         {
-//             if (scopes.Count <= 0) return;
+        private void EndScope()
+        {
+            scopes.Pop();
+        }
 
-//             Dictionary<string, bool> scope = scopes.Peek();
+        private void Declare(Token name)
+        {
+            if (scopes.Count <= 0) return;
 
-//             if (scope.ContainsKey(name.lexeme))
-//             {
-//                 Program.Error(name, "Already variable with this name in this scope.");
-//             }
+            Dictionary<string, bool> scope = scopes.Peek();
 
-//             Put(name.lexeme, false, scope);
-//         }
+            if (scope.ContainsKey(name.lexeme))
+            {
+                Program.Error(name, "Already a variable with this name in this scope.");
+            }
 
-//         private void Define(Token name)
-//         {
-//             if (scopes.Count <= 0) return;
-//             Put(name.lexeme, true, scopes.Peek());
-//         }
+            scope[name.lexeme] = false;
+        }
 
-//         private void ResolveLocal(Expression expression, Token name)
-//         {
-//             // In C# we can't access a stack using indexes. But we can in Java.
-//             List<Dictionary<string, bool>> temp = new List<Dictionary<string, bool>>();
-//             temp.AddRange(scopes.ToArray());
+        private void Define(Token name)
+        {
+            if (scopes.Count <= 0) return;
+            scopes.Peek()[name.lexeme] = true;
+        }
 
-//             for (int i = temp.Count - 1; i >= 0; i--)
-//             {
-//                 if (temp[i].ContainsKey(name.lexeme))
-//                 {
-//                     interpreter.Resolve(expression, temp.Count - 1 - i);
-//                     return;
-//                 }
-//             }
-//         }
+        private void ResolveLocal(Expression expression, Token name)
+        {
+            Dictionary<string, bool>[] temp = scopes.ToArray().Reverse().ToArray();
 
-//         private void Resolve(Expression expression)
-//         {
-//             expression.Accept(this);
-//         }
+            for (int i = scopes.Count - 1; i >= 0; i--)
+            {
+                if (temp[i].ContainsKey(name.lexeme))
+                {
+                    interpreter.Resolve(expression, temp.Length - 1 - i);
+                    break;
+                }
+            }
+        }
+        private void Resolve(Expression expression)
+        {
+            expression.Accept(this);
+        }
 
-//         public object VisitAssignExpression(Expression.Assign expression)
-//         {
-//             Resolve(expression.value);
-//             ResolveLocal(expression, expression.name);
-//             return null;
-//         }
+        public object VisitAssignExpression(Expression.Assign expression)
+        {
+            Resolve(expression.value);
+            ResolveLocal(expression, expression.name);
+            return null;
+        }
 
-//         public object VisitBinaryExpression(Expression.Binary expression)
-//         {
-//             Resolve(expression.left);
-//             Resolve(expression.right);
-//             return null;
-//         }
+        public object VisitBinaryExpression(Expression.Binary expression)
+        {
+            Resolve(expression.left);
+            Resolve(expression.right);
+            return null;
+        }
 
-//         public object VisitBlockStatement(Statement.Block statement)
-//         {
-//             BeginScope();
-//             Resolve(statement.statements);
-//             EndScope();
-//             return null;
-//         }
+        public object VisitBlockStatement(Statement.Block statement)
+        {
+            BeginScope();
+            Resolve(statement.statements);
+            EndScope();
+            return null;
+        }
 
-//         public object VisitBreakStatement(Statement.Break statement)
-//         {
-//             return null;
-//         }
+        public object VisitBreakStatement(Statement.Break statement)
+        {
+            return null;
+        }
 
-//         public object VisitCallExpression(Expression.Call expression)
-//         {
-//             Resolve(expression.callee);
+        public object VisitCallExpression(Expression.Call expression)
+        {
+            Resolve(expression.callee);
 
-//             foreach (Expression argument in expression.arguments)
-//             {
-//                 Resolve(argument);
-//             }
-//             return null;
-//         }
+            foreach (Expression argument in expression.arguments)
+            {
+                Resolve(argument);
+            }
+            return null;
+        }
 
-//         public object VisitContinueStatement(Statement.Continue statement)
-//         {
-//             return null;
-//         }
+        public object VisitContinueStatement(Statement.Continue statement)
+        {
+            return null;
+        }
 
-//         public object VisitExpressionStatement(Statement.Expression statement)
-//         {
-//             Resolve(statement.expression);
-//             return null;
-//         }
+        public object VisitExpressionStatement(Statement.Expression statement)
+        {
+            Resolve(statement.expression);
+            return null;
+        }
 
-//         public object VisitFunctionStatement(Statement.Function statement)
-//         {
-//             Declare(statement.name);
-//             Define(statement.name);
-//             ResolveFunction(statement);
-//             return null;
-//         }
+        public object VisitFunctionStatement(Statement.Function statement)
+        {
+            Declare(statement.name);
+            Define(statement.name);
 
-//         public object VisitGroupingExpression(Expression.Grouping expression)
-//         {
-//             Resolve(expression.expression);
-//             return null;
-//         }
+            ResolveFunction(statement, FunctionType.FUNCTION);
+            return null;
+        }
 
-//         public object VisitIfStatement(Statement.If statement)
-//         {
-//             Resolve(statement.condition);
-//             Resolve(statement.thenBranch);
-//             if (statement.elseBranch != null) Resolve(statement.elseBranch);
-//             return null;
-//         }
+        public object VisitGroupingExpression(Expression.Grouping expression)
+        {
+            Resolve(expression.expression);
+            return null;
+        }
 
-//         public object VisitLiteralExpression(Expression.Literal expression)
-//         {
-//             return null;
-//         }
+        public object VisitIfStatement(Statement.If statement)
+        {
+            Resolve(statement.condition);
+            Resolve(statement.thenBranch);
+            if (statement.elseBranch != null)
+            {
+                Resolve(statement.elseBranch);
+            }
+            return null;
+        }
 
-//         public object VisitLogicalExpression(Expression.Logical expression)
-//         {
-//             Resolve(expression.left);
-//             Resolve(expression.right);
-//             return null;
-//         }
+        public object VisitLiteralExpression(Expression.Literal expression)
+        {
+            return null;
+        }
 
-//         public object VisitPrintStatement(Statement.Print statement)
-//         {
-//             Resolve(statement.expression);
-//             return null;
-//         }
+        public object VisitLogicalExpression(Expression.Logical expression)
+        {
+            Resolve(expression.left);
+            Resolve(expression.right);
+            return null;
+        }
 
-//         public object VisitReturnStatement(Statement.Return statement)
-//         {
-//             if (statement.value != null)
-//             {
-//                 Resolve(statement.value);
-//             }
-//             return null;
-//         }
+        public object VisitPrintStatement(Statement.Print statement)
+        {
+            Resolve(statement.expression);
+            return null;
+        }
 
-//         public object VisitUnaryExpression(Expression.Unary expression)
-//         {
-//             Resolve(expression.right);
-//             return null;
-//         }
+        public object VisitReturnStatement(Statement.Return statement)
+        {
+            if (currentFunction == FunctionType.NONE)
+            {
+                Program.Error(statement.keyword, "Can't return from top-level code.");
+            }
+            if (statement.value != null)
+            {
+                Resolve(statement.value);
+            }
+            return null;
+        }
 
-//         public object VisitVariableExpression(Expression.Variable expression)
-//         {
-//             if (scopes.Count > 0 && scopes.Peek()[expression.name.lexeme] == false)
-//             {
-//                 Program.Error(expression.name, "Can't read local variable in its own initializer.");
-//             }
+        public object VisitUnaryExpression(Expression.Unary expression)
+        {
+            Resolve(expression.right);
+            return null;
+        }
 
-//             ResolveLocal(expression, expression.name);
-//             return null;
-//         }
+        public object VisitVariableExpression(Expression.Variable expression)
+        {
+            // We need to use try get since the Java get handles values that do not exist.
+            if (scopes.Count > 0 && scopes.Peek().TryGetValue(expression.name.lexeme, out bool value))
+            {
+                if (!value)
+                {
+                    Program.Error(expression.name, "Can't read local variable in its own initializer.");
+                }
+            }
 
-//         public object VisitVarStatement(Statement.Var statement)
-//         {
-//             Declare(statement.name);
+            ResolveLocal(expression, expression.name);
+            return null;
+        }
 
-//             if (statement.initialiser != null)
-//             {
-//                 Resolve(statement.initialiser);
-//             }
+        public object VisitVarStatement(Statement.Var statement)
+        {
+            Declare(statement.name);
 
-//             Define(statement.name);
-//             return null;
-//         }
+            if (statement.initialiser != null)
+            {
+                Resolve(statement.initialiser);
+            }
 
-//         public object VisitWhileStatement(Statement.While statement)
-//         {
-//             Resolve(statement.condition);
-//             Resolve(statement.body);
-//             return null;
-//         }
+            Define(statement.name);
+            return null;
+        }
 
-//         // Equivalent to Java's Hash Map 'put' function.
-//         private void Put(string key, bool value, Dictionary<string, bool> scope)
-//         {
-//             if (scope.ContainsKey(key))
-//             {
-//                 scope[key] = value;
-//             }
-//             else
-//             {
-//                 scope.Add(key, value);
-//             }
-//         }
-//     }
-// }
+        public object VisitWhileStatement(Statement.While statement)
+        {
+            Resolve(statement.condition);
+            Resolve(statement.body);
+            return null;
+        }
+    }
+}

@@ -49,5 +49,26 @@ namespace LoxLangInCSharp
         {
             values[name] = value;
         }
+
+        public object GetAt(int distance, string name)
+        {
+            return Ancestor(distance).values[name];
+        }
+
+        public void AssignAt(int distance, Token name, object value)
+        {
+            Ancestor(distance).values[name.lexeme] = value;
+        }
+
+        public Environment Ancestor(int distance)
+        {
+            Environment environment = this;
+            for (int i = 0; i < distance; i++)
+            {
+                environment = environment.enclosing;
+            }
+
+            return environment;
+        }
     }
 }

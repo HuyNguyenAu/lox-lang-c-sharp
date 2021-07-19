@@ -7,6 +7,7 @@ namespace LoxLangInCSharp
     public class Interpreter : Expression.IVisitor<object>, Statement.IVisitor<object>
     {
         public readonly Environment globals = new Environment();
+        public readonly Dictionary<Expression, int> locals = new Dictionary<Expression, int>();
         /* Unlike Java, we cannot refer to globals since it is a non static field.
         We'll use the initialiser method to set this. */
         private Environment environment = null;
@@ -30,7 +31,8 @@ namespace LoxLangInCSharp
             }
         }
 
-        public Interpreter() {
+        public Interpreter()
+        {
             environment = globals;
 
             globals.Define("clock", new Clock());
@@ -173,7 +175,19 @@ namespace LoxLangInCSharp
 
         public object VisitVariableExpression(Expression.Variable expression)
         {
-            return environment.Get(expression.name);
+            return LookUpVariable(expression.name, expression);
+        }
+
+        public object LookUpVariable(Token name, Expression expression)
+        {
+            if (locals.TryGetValue(expression, out int distance))
+            {
+                return environment.GetAt(distance, name.lexeme);
+            }
+            else
+            {
+                return globals.Get(name);
+            }
         }
 
         public object VisitExpressionStatement(Statement.Expression statement)
@@ -182,7 +196,7 @@ namespace LoxLangInCSharp
             return null;
         }
 
-         public object VisitFunctionStatement(Statement.Function statement)
+        public object VisitFunctionStatement(Statement.Function statement)
         {
             Function function = new Function(statement, environment);
             environment.Define(statement.name.lexeme, function);
@@ -213,8 +227,9 @@ namespace LoxLangInCSharp
         public object VisitReturnStatement(Statement.Return statement)
         {
             object value = null;
-            
-            if (statement.value != null){
+
+            if (statement.value != null)
+            {
                 value = Evaluate(statement.value);
             }
 
@@ -270,7 +285,16 @@ namespace LoxLangInCSharp
         public object VisitAssignExpression(Expression.Assign expression)
         {
             object value = Evaluate(expression.value);
-            environment.Assign(expression.name, value);
+
+            if (locals.TryGetValue(expression, out int distance))
+            {
+                environment.AssignAt(distance, expression.name, value);
+            }
+            else
+            {
+                globals.Assign(expression.name, value);
+            }
+
             return value;
         }
 
@@ -303,6 +327,11 @@ namespace LoxLangInCSharp
         private void Execute(Statement statement)
         {
             statement.Accept(this);
+        }
+
+        public void Resolve(Expression expression, int depth)
+        {
+            locals[expression] = depth;
         }
 
         public void ExecuteBlock(List<Statement> statements, Environment environment)
