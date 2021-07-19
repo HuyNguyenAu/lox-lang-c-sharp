@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LoxLangInCSharp
 {
@@ -80,13 +79,22 @@ namespace LoxLangInCSharp
 
         private void ResolveLocal(Expression expression, Token name)
         {
-            Dictionary<string, bool>[] temp = scopes.ToArray().Reverse().ToArray();
+            Dictionary<string, bool>[] temp = scopes.ToArray();
 
-            for (int i = scopes.Count - 1; i >= 0; i--)
+            /* Currently the innermost scope is at the top of the scopes stack.
+            So we need to go through the innermost to outmost scope to find the
+            matching name.
+            When we find it, we need to keep track of the numbers of scopes we are
+            current on and where it was found.
+            Since we started at the top of the scope stack (first item), the 
+            distance will just be the number of iterations(i).
+            I'm still not sure why the Java implementation has the innermost scope at the top but
+            C# doesn't. I expected it to be at the top... */
+            for (int i = 0; i < scopes.Count; i++)
             {
                 if (temp[i].ContainsKey(name.lexeme))
                 {
-                    interpreter.Resolve(expression, temp.Length - 1 - i);
+                    interpreter.Resolve(expression, i);
                     break;
                 }
             }
