@@ -130,6 +130,18 @@ namespace LoxLangInCSharp
             return function.Call(this, arguments);
         }
 
+         public object VisitGetExpression(Expression.Get expression)
+        {
+            object obj = Evaluate(expression.obj);
+
+            if (obj.GetType() == typeof(Instance))
+            {
+                return ((Instance) obj).Get(expression.name);
+            }
+
+            throw new RuntimeError(expression.name, "Only instances have properties.");
+        }
+
         public object VisitGroupingExpression(Expression.Grouping expression)
         {
             return Evaluate(expression.expression);

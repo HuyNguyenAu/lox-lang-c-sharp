@@ -149,6 +149,12 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitGetExpression(Expression.Get expression)
+        {
+            Resolve(expression.obj);
+            return null;
+        }
+
         public object VisitContinueStatement(Statement.Continue statement)
         {
             return null;

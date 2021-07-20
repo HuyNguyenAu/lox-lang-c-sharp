@@ -412,6 +412,11 @@ namespace LoxLangInCSharp
                 {
                     expression = FinishCall(expression);
                 }
+                else if (Match(TokenType.DOT))
+                {
+                    Token name = Consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
+                    expression = new Expression.Get(expression, name);
+                }
                 else
                 {
                     break;

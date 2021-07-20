@@ -82,5 +82,10 @@ namespace Tools
         {
             throw new NotImplementedException();
         }
+
+        public string VisitGetExpression(Expression.Get expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
