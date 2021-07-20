@@ -204,6 +204,13 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitSetExpression(Expression.Set expression)
+        {
+            Resolve(expression.value);
+            Resolve(expression.obj);
+            return null;
+        }
+
         public object VisitPrintStatement(Statement.Print statement)
         {
             Resolve(statement.expression);

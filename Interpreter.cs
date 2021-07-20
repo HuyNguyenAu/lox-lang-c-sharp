@@ -168,6 +168,20 @@ namespace LoxLangInCSharp
             return Evaluate(expression.right);
         }
 
+        public object VisitSetExpression(Expression.Set expression)
+        {
+            object obj = Evaluate(expression.obj);
+
+            if (obj.GetType() != typeof(Instance))
+            {
+                throw new RuntimeError(expression.name, "Only instances have fields.");
+            }
+
+            object value = Evaluate(expression.value);
+            ((Instance) obj).Set(expression.name, value);
+            return value;
+        }
+
         public object VisitUnaryExpression(Expression.Unary expression)
         {
             object right = Evaluate(expression.right);

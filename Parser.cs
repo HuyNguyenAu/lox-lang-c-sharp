@@ -296,6 +296,11 @@ namespace LoxLangInCSharp
                     Token name = (expression as Expression.Variable).name;
                     return new Expression.Assign(name, value);
                 }
+                else if (expression.GetType() == typeof(Expression.Get))
+                {
+                    Expression.Get get = (Expression.Get)expression;
+                    return new Expression.Set(get.obj, get.name, value);
+                }
 
                 Error(equals, "Invalid assignment target.");
             }
