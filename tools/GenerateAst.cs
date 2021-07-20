@@ -20,6 +20,7 @@ namespace Tools
                     "Assign   : Token name, Expression value",
                     "Binary   : Expression left, Token op, Expression right",
                     "Call     : Expression callee, Token parenthesis, List<Expression> arguments",
+                    "Get      : Expression obj, Token name",
                     "Grouping : Expression expression",
                     "Literal  : object value",
                     "Logical  : Expression left, Token op, Expression right",

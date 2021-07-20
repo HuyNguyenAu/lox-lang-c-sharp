@@ -7,6 +7,7 @@ public interface IVisitor<T> {
 public T VisitAssignExpression (Assign expression);
 public T VisitBinaryExpression (Binary expression);
 public T VisitCallExpression (Call expression);
+public T VisitGetExpression (Get expression);
 public T VisitGroupingExpression (Grouping expression);
 public T VisitLiteralExpression (Literal expression);
 public T VisitLogicalExpression (Logical expression);
@@ -55,6 +56,19 @@ return visitor.VisitCallExpression(this);
 public readonly Expression callee;
 public readonly Token parenthesis;
 public readonly List<Expression> arguments;
+}
+public class Get : Expression {
+public Get (Expression obj, Token name) {
+this.obj = obj;
+this.name = name;
+}
+
+public override T Accept<T> (IVisitor<T> visitor) {
+return visitor.VisitGetExpression(this);
+}
+
+public readonly Expression obj;
+public readonly Token name;
 }
 public class Grouping : Expression {
 public Grouping (Expression expression) {
