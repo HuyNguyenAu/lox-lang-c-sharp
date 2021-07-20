@@ -126,6 +126,13 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitClassStatement(Statement.Class statement)
+        {
+            Declare(statement.name);
+            Define(statement.name);
+            return null;
+        }
+
         public object VisitBreakStatement(Statement.Break statement)
         {
             return null;

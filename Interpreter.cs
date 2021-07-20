@@ -304,6 +304,14 @@ namespace LoxLangInCSharp
             return null;
         }
 
+        public object VisitClassStatement(Statement.Class statement)
+        {
+            environment.Define(statement.name.lexeme, null);
+            Klass klass = new Klass(statement.name.lexeme);
+            environment.Assign(statement.name, klass);
+            return null;
+        }
+
         private void CheckNumberOperand(Token op, object operand)
         {
             if (operand.GetType() == typeof(double)) return;
