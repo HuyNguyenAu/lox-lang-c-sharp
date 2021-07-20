@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+
 namespace LoxLangInCSharp
 {
-    public class Klass
+    public class Klass : Callable
     {
         private readonly string name;
 
@@ -13,5 +15,17 @@ namespace LoxLangInCSharp
         {
             return name;
         }
+
+        public object Call(Interpreter interpreter, List<object> arguments)
+        {
+            Instance instance = new Instance(this);
+            return instance;
+        }
+
+        public int Arity()
+        {
+            return 0;
+        }
+
     }
 }
