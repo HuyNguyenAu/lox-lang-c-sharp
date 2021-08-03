@@ -5,10 +5,20 @@ namespace LoxLangInCSharp
     public class Klass : Callable
     {
         private readonly string name;
+        private readonly Dictionary<string, Function> methods;
 
-        public Klass(string name)
+        public Klass(string name, Dictionary<string, Function> methods)
         {
             this.name = name;
+            this.methods = methods;
+        }
+
+        public Function FindMethod(string name) {
+            if (methods.ContainsKey(name)) {
+                return methods[name];
+            }
+
+            return null;
         }
 
         public override string ToString()

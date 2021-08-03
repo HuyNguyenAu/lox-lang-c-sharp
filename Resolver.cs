@@ -10,7 +10,8 @@ namespace LoxLangInCSharp
         private enum FunctionType
         {
             NONE,
-            FUNCTION
+            FUNCTION,
+            METHOD
         }
 
         public Resolver(Interpreter interpreter)
@@ -130,6 +131,13 @@ namespace LoxLangInCSharp
         {
             Declare(statement.name);
             Define(statement.name);
+
+            foreach (Statement.Function method in statement.methods)
+            {
+                FunctionType declaration = FunctionType.METHOD;
+                ResolveFunction(method, declaration);
+            }
+
             return null;
         }
 

@@ -333,7 +333,16 @@ namespace LoxLangInCSharp
         public object VisitClassStatement(Statement.Class statement)
         {
             environment.Define(statement.name.lexeme, null);
-            Klass klass = new Klass(statement.name.lexeme);
+            
+            Dictionary<string, Function> methods = new Dictionary<string, Function>();
+
+            foreach (Statement.Function method in statement.methods)
+            {
+                Function function = new Function(method, environment);
+                methods[method.name.lexeme] = function;
+            }
+            
+            Klass klass = new Klass(statement.name.lexeme, methods);
             environment.Assign(statement.name, klass);
             return null;
         }

@@ -1,0 +1,7 @@
+class Bagel {
+    isYum() {
+      return True;
+    }
+}
+var bagel = Bagel();
+bagel.isYum();

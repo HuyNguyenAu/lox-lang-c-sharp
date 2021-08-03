@@ -19,6 +19,11 @@ namespace LoxLangInCSharp
                 return fields[name.lexeme];
             }
 
+            Function method = klass.FindMethod(name.lexeme);
+            if (method != null) {
+                return method;
+            }
+
             throw new RuntimeError(name, $"Undefined property '{name.lexeme}'.");
         }
 
