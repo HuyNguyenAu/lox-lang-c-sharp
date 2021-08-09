@@ -92,5 +92,10 @@ namespace Tools
         {
             throw new NotImplementedException();
         }
+
+        public string VisitThisExpression(Expression.This expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

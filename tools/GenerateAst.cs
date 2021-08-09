@@ -24,6 +24,7 @@ namespace Tools
                     "Grouping : Expression expression",
                     "Literal  : object value",
                     "Logical  : Expression left, Token op, Expression right",
+                    "This     : Token keyword",
                     "Set      : Expression obj, Token name, Expression value",
                     "Unary    : Token op, Expression right",
                     "Variable : Token name"

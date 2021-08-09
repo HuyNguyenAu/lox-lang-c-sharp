@@ -132,11 +132,16 @@ namespace LoxLangInCSharp
             Declare(statement.name);
             Define(statement.name);
 
+            BeginScope();
+            scopes.Peek()["this"] = true;
+
             foreach (Statement.Function method in statement.methods)
             {
                 FunctionType declaration = FunctionType.METHOD;
                 ResolveFunction(method, declaration);
             }
+
+            EndScope();
 
             return null;
         }
@@ -216,6 +221,12 @@ namespace LoxLangInCSharp
         {
             Resolve(expression.value);
             Resolve(expression.obj);
+            return null;
+        }
+        
+        public object VisitThisExpression(Expression.This expression)
+        {
+            ResolveLocal(expression, expression.keyword);
             return null;
         }
 

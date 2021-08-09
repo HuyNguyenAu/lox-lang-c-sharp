@@ -13,6 +13,13 @@ namespace LoxLangInCSharp
             this.closure = closure;
         }
 
+        public Function Bind(Instance instance)
+        {
+            Environment environment = new Environment(closure);
+            environment.Define("this", instance);
+            return new Function(declaration, environment);
+        }
+
         public int Arity()
         {
             return declaration.parameters.Count;

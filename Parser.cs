@@ -464,6 +464,11 @@ namespace LoxLangInCSharp
                 return new Expression.Literal(Previous().literal);
             }
 
+            if (Match(TokenType.THIS))
+            {
+                return new Expression.This(Previous());
+            }
+
             if (Match(TokenType.IDENTIFIER))
             {
                 return new Expression.Variable(Previous());

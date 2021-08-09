@@ -11,6 +11,7 @@ public T VisitGetExpression (Get expression);
 public T VisitGroupingExpression (Grouping expression);
 public T VisitLiteralExpression (Literal expression);
 public T VisitLogicalExpression (Logical expression);
+public T VisitThisExpression (This expression);
 public T VisitSetExpression (Set expression);
 public T VisitUnaryExpression (Unary expression);
 public T VisitVariableExpression (Variable expression);
@@ -107,6 +108,17 @@ return visitor.VisitLogicalExpression(this);
 public readonly Expression left;
 public readonly Token op;
 public readonly Expression right;
+}
+public class This : Expression {
+public This (Token keyword) {
+this.keyword = keyword;
+}
+
+public override T Accept<T> (IVisitor<T> visitor) {
+return visitor.VisitThisExpression(this);
+}
+
+public readonly Token keyword;
 }
 public class Set : Expression {
 public Set (Expression obj, Token name, Expression value) {

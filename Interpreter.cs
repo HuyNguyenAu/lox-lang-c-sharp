@@ -182,6 +182,11 @@ namespace LoxLangInCSharp
             return value;
         }
 
+        public object VisitThisExpression(Expression.This expression)
+        {
+            return LookUpVariable(expression.keyword, expression);
+        }
+
         public object VisitUnaryExpression(Expression.Unary expression)
         {
             object right = Evaluate(expression.right);
