@@ -7,11 +7,17 @@ namespace LoxLangInCSharp
         private readonly Interpreter interpreter = null;
         private readonly Stack<Dictionary<string, bool>> scopes = new Stack<Dictionary<string, bool>>();
         private FunctionType currentFunction = FunctionType.NONE;
+        private ClassType currentClass = ClassType.NONE;
         private enum FunctionType
         {
             NONE,
             FUNCTION,
             METHOD
+        }
+        private enum ClassType
+        {
+            NONE,
+            CLASS
         }
 
         public Resolver(Interpreter interpreter)
@@ -129,6 +135,9 @@ namespace LoxLangInCSharp
 
         public object VisitClassStatement(Statement.Class statement)
         {
+            ClassType enclosingClass = currentClass;
+            currentClass = ClassType.CLASS;
+
             Declare(statement.name);
             Define(statement.name);
 
@@ -143,6 +152,7 @@ namespace LoxLangInCSharp
 
             EndScope();
 
+            currentClass = enclosingClass;
             return null;
         }
 
@@ -226,6 +236,12 @@ namespace LoxLangInCSharp
         
         public object VisitThisExpression(Expression.This expression)
         {
+            if (currentClass == ClassType.NONE)
+            {
+                Program.Error(expression.keyword, "Can't use 'this' outside of a class.");
+                return null;
+            }
+
             ResolveLocal(expression, expression.keyword);
             return null;
         }
