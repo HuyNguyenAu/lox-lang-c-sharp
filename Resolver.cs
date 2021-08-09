@@ -11,6 +11,7 @@ namespace LoxLangInCSharp
         private enum FunctionType
         {
             NONE,
+            INITIALISER,
             FUNCTION,
             METHOD
         }
@@ -147,6 +148,12 @@ namespace LoxLangInCSharp
             foreach (Statement.Function method in statement.methods)
             {
                 FunctionType declaration = FunctionType.METHOD;
+
+                if (method.name.lexeme == "init")
+                {
+                    declaration = FunctionType.INITIALISER;
+                }
+
                 ResolveFunction(method, declaration);
             }
 
@@ -260,6 +267,11 @@ namespace LoxLangInCSharp
             }
             if (statement.value != null)
             {
+                if (currentFunction == FunctionType.INITIALISER)
+                {
+                    Program.Error(statement.keyword, "Can't return a value from an initializer.");
+                }
+                
                 Resolve(statement.value);
             }
             return null;

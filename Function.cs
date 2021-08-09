@@ -42,6 +42,10 @@ namespace LoxLangInCSharp
             }
             catch (ReturnException value)
             {
+                if (isInitialiser) {
+                    return closure.GetAt(0, "this");
+                }
+                
                 return value.value;
             }
 
