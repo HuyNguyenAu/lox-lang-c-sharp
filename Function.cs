@@ -6,18 +6,20 @@ namespace LoxLangInCSharp
     {
         private readonly Statement.Function declaration = null;
         private readonly Environment closure = null;
+        private readonly bool isInitialiser = false;
 
-        public Function(Statement.Function declaration, Environment closure)
+        public Function(Statement.Function declaration, Environment closure, bool isInitialiser)
         {
             this.declaration = declaration;
             this.closure = closure;
+            this.isInitialiser = isInitialiser;
         }
 
         public Function Bind(Instance instance)
         {
             Environment environment = new Environment(closure);
             environment.Define("this", instance);
-            return new Function(declaration, environment);
+            return new Function(declaration, environment, isInitialiser);
         }
 
         public int Arity()
@@ -41,6 +43,11 @@ namespace LoxLangInCSharp
             catch (ReturnException value)
             {
                 return value.value;
+            }
+
+            if (isInitialiser)
+            {
+                return closure.GetAt(0, "this");
             }
 
             return null;

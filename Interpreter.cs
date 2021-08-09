@@ -228,7 +228,7 @@ namespace LoxLangInCSharp
 
         public object VisitFunctionStatement(Statement.Function statement)
         {
-            Function function = new Function(statement, environment);
+            Function function = new Function(statement, environment, false);
             environment.Define(statement.name.lexeme, function);
             return null;
         }
@@ -342,7 +342,7 @@ namespace LoxLangInCSharp
 
             foreach (Statement.Function method in statement.methods)
             {
-                Function function = new Function(method, environment);
+                Function function = new Function(method, environment, method.name.lexeme == "init");
                 methods[method.name.lexeme] = function;
             }
             
