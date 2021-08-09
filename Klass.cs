@@ -13,8 +13,10 @@ namespace LoxLangInCSharp
             this.methods = methods;
         }
 
-        public Function FindMethod(string name) {
-            if (methods.ContainsKey(name)) {
+        public Function FindMethod(string name)
+        {
+            if (methods.ContainsKey(name))
+            {
                 return methods[name];
             }
 
@@ -29,12 +31,27 @@ namespace LoxLangInCSharp
         public object Call(Interpreter interpreter, List<object> arguments)
         {
             Instance instance = new Instance(this);
+
+            Function initialiser = FindMethod("init");
+
+            if (initialiser != null)
+            {
+                initialiser.Bind(instance).Call(interpreter, arguments);
+            }
+
             return instance;
         }
 
         public int Arity()
         {
-            return 0;
+            Function initialiser = FindMethod("init");
+
+            if (initialiser == null)
+            {
+                return 0;
+            }
+
+            return initialiser.Arity();
         }
 
     }
