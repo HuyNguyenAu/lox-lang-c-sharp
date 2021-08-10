@@ -26,6 +26,7 @@ namespace Tools
                     "Logical  : Expression left, Token op, Expression right",
                     "This     : Token keyword",
                     "Set      : Expression obj, Token name, Expression value",
+                    "Super    : Token name, Token method",
                     "Unary    : Token op, Expression right",
                     "Variable : Token name"
                 }
