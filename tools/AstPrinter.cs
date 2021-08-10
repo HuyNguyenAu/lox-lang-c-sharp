@@ -97,5 +97,10 @@ namespace Tools
         {
             throw new NotImplementedException();
         }
+
+        public string VisitSuperExpression(Expression.Super expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

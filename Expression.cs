@@ -16,6 +16,7 @@ namespace LoxLangInCSharp
             public T VisitLogicalExpression(Logical expression);
             public T VisitThisExpression(This expression);
             public T VisitSetExpression(Set expression);
+            public T VisitSuperExpression(Super expression);
             public T VisitUnaryExpression(Unary expression);
             public T VisitVariableExpression(Variable expression);
         }
@@ -164,6 +165,22 @@ namespace LoxLangInCSharp
             public readonly Expression obj;
             public readonly Token name;
             public readonly Expression value;
+        }
+        public class Super : Expression
+        {
+            public Super(Token keyword, Token method)
+            {
+                this.keyword = keyword;
+                this.method = method;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor)
+            {
+                return visitor.VisitSuperExpression(this);
+            }
+
+            public readonly Token keyword;
+            public readonly Token method;
         }
         public class Unary : Expression
         {
