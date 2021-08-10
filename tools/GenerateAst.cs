@@ -34,7 +34,7 @@ namespace Tools
             DefineAst(outputDir, "Statement", new List<string>()
             {
                 "Block      : List<LoxLangInCSharp.Statement> statements",
-                "Class      : Token name, List<LoxLangInCSharp.Statement.Function> methods",
+                "Class      : Token name, LoxLangInCSharp.Expression.Variable superclass, List<LoxLangInCSharp.Statement.Function> methods",
                 "Break      : ",
                 "Continue   : ",
                 "Expression : LoxLangInCSharp.Expression expression",

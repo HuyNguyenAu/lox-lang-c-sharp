@@ -336,6 +336,18 @@ namespace LoxLangInCSharp
 
         public object VisitClassStatement(Statement.Class statement)
         {
+            object superClass = null;
+            
+            if (statement.superclass != null)
+            {
+                superClass = Evaluate(statement.superclass);
+
+                if (superClass.GetType() != typeof(Klass))
+                {
+                    throw new RuntimeError(statement.superclass.name, "Superclass must be a class.");
+                }
+            }
+
             environment.Define(statement.name.lexeme, null);
             
             Dictionary<string, Function> methods = new Dictionary<string, Function>();
@@ -346,7 +358,7 @@ namespace LoxLangInCSharp
                 methods[method.name.lexeme] = function;
             }
             
-            Klass klass = new Klass(statement.name.lexeme, methods);
+            Klass klass = new Klass(statement.name.lexeme, (Klass)superClass, methods);
             environment.Assign(statement.name, klass);
             return null;
         }

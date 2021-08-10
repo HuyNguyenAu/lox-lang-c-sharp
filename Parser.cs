@@ -53,6 +53,14 @@ namespace LoxLangInCSharp
         private Statement ClassDeclaration()
         {
             Token name = Consume(TokenType.IDENTIFIER, "Expect class name.");
+
+            Expression.Variable superClass = null;
+            if (Match(TokenType.LESS))
+            {
+                Consume(TokenType.IDENTIFIER, "Expect superclass name.");
+                superClass = new Expression.Variable(Previous());
+            }
+
             Consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
 
             List<Statement.Function> methods = new List<Statement.Function>();
@@ -63,7 +71,7 @@ namespace LoxLangInCSharp
 
             Consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
 
-            return new Statement.Class(name, methods);
+            return new Statement.Class(name, superClass, methods);
         }
 
         private Statement Statement()

@@ -5,11 +5,13 @@ namespace LoxLangInCSharp
     public class Klass : Callable
     {
         private readonly string name;
+        private readonly Klass superClass;
         private readonly Dictionary<string, Function> methods;
 
-        public Klass(string name, Dictionary<string, Function> methods)
+        public Klass(string name, Klass superClass, Dictionary<string, Function> methods)
         {
             this.name = name;
+            this.superClass = superClass;
             this.methods = methods;
         }
 

@@ -142,6 +142,16 @@ namespace LoxLangInCSharp
             Declare(statement.name);
             Define(statement.name);
 
+            if (statement.superclass != null && statement.name.lexeme == statement.superclass.name.lexeme)
+            {
+                Program.Error(statement.superclass.name.line, "A class can't inherit from itself.");
+            }
+
+            if (statement.superclass != null)
+            {
+                Resolve(statement.superclass);
+            }
+
             BeginScope();
             scopes.Peek()["this"] = true;
 
