@@ -22,6 +22,11 @@ namespace LoxLangInCSharp
                 return methods[name];
             }
 
+            if (superClass != null)
+            {
+                return superClass.FindMethod(name);
+            }
+
             return null;
         }
 
