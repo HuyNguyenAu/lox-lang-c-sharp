@@ -173,8 +173,11 @@ namespace LoxLangInCSharp
         public object VisitSetExpression(Expression.Set expression)
         {
             object obj = Evaluate(expression.obj);
-
-            if (obj.GetType() != typeof(Instance))
+            
+            /* In Java, a instanceof b where a = null return false.
+            C# will throw an exception. So we need to check if obj
+            is null first. */
+            if (obj == null || obj.GetType() != typeof(Instance))
             {
                 throw new RuntimeError(expression.name, "Only instances have fields.");
             }
