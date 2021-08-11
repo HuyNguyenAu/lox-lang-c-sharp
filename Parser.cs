@@ -472,6 +472,14 @@ namespace LoxLangInCSharp
                 return new Expression.Literal(Previous().literal);
             }
 
+            if (Match(TokenType.SUPER))
+            {
+                Token keyword = Previous();
+                Consume(TokenType.DOT, "Expect '.' after 'super'.");
+                Token method = Consume(TokenType.IDENTIFIER, "Expect superclass method name.");
+                return new Expression.Super(keyword, method);
+            }
+
             if (Match(TokenType.THIS))
             {
                 return new Expression.This(Previous());

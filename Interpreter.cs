@@ -180,6 +180,22 @@ namespace LoxLangInCSharp
             ((Instance) obj).Set(expression.name, value);
             return value;
         }
+        
+        public object VisitSuperExpression(Expression.Super expression)
+        {
+            int distance = locals[expression];
+            Klass superClass = (Klass)environment.GetAt(distance, "super");
+
+            Instance obj = (Instance)environment.GetAt(distance - 1, "this");
+            Function method = superClass.FindMethod(expression.method.lexeme);
+
+            if (method == null)
+            {
+                throw new RuntimeError(expression.method, $"Undefined property '{expression.method.lexeme}'.");
+            }
+
+            return method.Bind(obj);
+        }
 
         public object VisitThisExpression(Expression.This expression)
         {
@@ -349,6 +365,12 @@ namespace LoxLangInCSharp
             }
 
             environment.Define(statement.name.lexeme, null);
+
+            if (statement.superclass != null)
+            {
+                environment = new Environment(environment);
+                environment.Define("super", superClass);
+            }
             
             Dictionary<string, Function> methods = new Dictionary<string, Function>();
 

@@ -152,6 +152,12 @@ namespace LoxLangInCSharp
                 Resolve(statement.superclass);
             }
 
+            if (statement.superclass != null)
+            {
+                BeginScope();
+                scopes.Peek()["super"] = true;
+            }
+
             BeginScope();
             scopes.Peek()["this"] = true;
 
@@ -168,6 +174,11 @@ namespace LoxLangInCSharp
             }
 
             EndScope();
+
+            if (statement.superclass != null)
+            {
+                EndScope();
+            }
 
             currentClass = enclosingClass;
             return null;
@@ -248,6 +259,11 @@ namespace LoxLangInCSharp
         {
             Resolve(expression.value);
             Resolve(expression.obj);
+            return null;
+        }
+        public object VisitSuperExpression(Expression.Super expression)
+        {
+            ResolveLocal(expression, expression.keyword);
             return null;
         }
         
