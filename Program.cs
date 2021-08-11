@@ -72,12 +72,20 @@ namespace LoxLangInCSharp
             {
                 statements = parser.Parse();
             }
-            catch (Exception) { }
+            catch (Exception) { 
+                hadError = true;
+            }
 
             // Stop if we run into an error.
             if (hadError) return;
             // TEMP: Exit early when expression is invalid.
             if (statements.Count <= 0) return;
+
+            // What to do if a statement is null ? Should we just exit?
+            foreach (Statement statement in statements)
+            {
+                if (statement == null) return;
+            }
 
             Resolver resolver = new Resolver(interpreter);
             resolver.Resolve(statements);
