@@ -77,13 +77,13 @@ namespace LoxLangInCSharp
                     return (double)left * (double)right;
 
                 case TokenType.PLUS:
-                    if (left.GetType() == typeof(double) &&
+                    if (left != null && right != null && left.GetType() == typeof(double) &&
                         right.GetType() == typeof(double))
                     {
                         return (double)left + (double)right;
                     }
 
-                    if (left.GetType() == typeof(string) &&
+                    if (left != null && right != null && left.GetType() == typeof(string) &&
                         right.GetType() == typeof(string))
                     {
                         return (string)left + (string)right;
