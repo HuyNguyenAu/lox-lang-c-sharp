@@ -93,7 +93,16 @@ namespace LoxLangInCSharp
             // Stop if there was a resolution error.
             if (hadError) return;
 
-            interpreter.Interpret(statements);
+            // Handle ReturnException.
+            try
+            {
+                interpreter.Interpret(statements);
+            }
+            catch (Exception)
+            {
+                System.Environment.Exit(65);
+            }
+            
         }
 
         public static void Error(int line, string message)
