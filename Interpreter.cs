@@ -133,7 +133,10 @@ namespace LoxLangInCSharp
         {
             object obj = Evaluate(expression.obj);
 
-            if (obj.GetType() == typeof(Instance))
+            /* In Java, a instanceof b where a = null return false.
+            C# will throw an exception. So we need to check if obj
+            is null first. */
+            if (obj != null && obj.GetType() == typeof(Instance))
             {
                 return ((Instance) obj).Get(expression.name);
             }
