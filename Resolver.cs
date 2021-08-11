@@ -18,7 +18,8 @@ namespace LoxLangInCSharp
         private enum ClassType
         {
             NONE,
-            CLASS
+            CLASS,
+            SUBCLASS
         }
 
         public Resolver(Interpreter interpreter)
@@ -149,6 +150,7 @@ namespace LoxLangInCSharp
 
             if (statement.superclass != null)
             {
+                currentClass = ClassType.SUBCLASS;
                 Resolve(statement.superclass);
             }
 
@@ -263,6 +265,13 @@ namespace LoxLangInCSharp
         }
         public object VisitSuperExpression(Expression.Super expression)
         {
+            if (currentClass == ClassType.NONE)
+            {
+                Program.Error(expression.keyword, "Can't use 'super' outside of a class.");
+            } else if (currentClass != ClassType.SUBCLASS)
+            {
+                Program.Error(expression.keyword, "Can't use 'super' in a class with no superclass.");
+            }
             ResolveLocal(expression, expression.keyword);
             return null;
         }
