@@ -1,5 +1,5 @@
 {
-  var f;
+  var f = nil;
 
   {
     var a = "a";

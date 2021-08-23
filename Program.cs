@@ -125,6 +125,7 @@ namespace LoxLangInCSharp
         private static void Report(int line, string where, string message)
         {
             Console.WriteLine($"[line {line}] Error {where}: {message}");
+            hadError = true;
         }
 
         public static void RuntimeError(RuntimeError error)

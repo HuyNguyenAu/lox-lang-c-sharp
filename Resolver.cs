@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LoxLangInCSharp
 {
@@ -89,6 +90,16 @@ namespace LoxLangInCSharp
         private void ResolveLocal(Expression expression, Token name)
         {
             Dictionary<string, bool>[] temp = scopes.ToArray();
+            // Dictionary<string, bool>[] tempScopes = scopes.Reverse().ToArray();
+
+            // for (int i = scopes.Count() - 1; i >= 0; i--)
+            // {
+            //     if (tempScopes[i].ContainsKey(name.lexeme))
+            //     {
+            //         interpreter.Resolve(expression, scopes.Count() - 1 - i);
+            //         return;
+            //     }
+            // }
 
             /* Currently the innermost scope is at the top of the scopes stack.
             So we need to go through the innermost to outmost scope to find the
@@ -104,7 +115,7 @@ namespace LoxLangInCSharp
                 if (temp[i].ContainsKey(name.lexeme))
                 {
                     interpreter.Resolve(expression, i);
-                    break;
+                    return;
                 }
             }
         }
@@ -152,10 +163,6 @@ namespace LoxLangInCSharp
             {
                 currentClass = ClassType.SUBCLASS;
                 Resolve(statement.superclass);
-            }
-
-            if (statement.superclass != null)
-            {
                 BeginScope();
                 scopes.Peek()["super"] = true;
             }

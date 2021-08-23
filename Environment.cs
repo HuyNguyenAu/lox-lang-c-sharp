@@ -9,7 +9,7 @@ namespace LoxLangInCSharp
 
         /* Used for global scope enviroment. No enclosing
         since it is at the end of the parent pointer tree. */
-        public Environment() { }
+        public Environment() { enclosing = null; }
 
         /* Create a new local scope nested inside the enclosing
         outer one. */

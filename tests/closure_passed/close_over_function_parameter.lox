@@ -1,4 +1,4 @@
-var f;
+var f = nil;
 
 fun foo(param) {
   fun f_() {

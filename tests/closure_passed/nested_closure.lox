@@ -1,4 +1,4 @@
-var f;
+var f = nil;
 
 fun f1() {
   var a = "a";
